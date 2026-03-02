@@ -2,8 +2,7 @@
 import DeckRow from "./components/admin/DeckRow";
 import DrillView from "./components/drill/DrillView";
 import ImportDeck from "./components/admin/ImportDeck";
-
-
+import { useDeckStorage } from "./hooks/useDeckStorage";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -64,14 +63,7 @@ export default function App() {
   const [autoRefreshIntervalMin, setAutoRefreshIntervalMin] = useState(0); // 0 = off
 
   // Decks
-  const [decks, setDecks] = useState(() => {
-    // Load decks from localStorage
-    try {
-      const saved = localStorage.getItem(LS_KEY);
-      if (saved) return deserializeDecks(JSON.parse(saved));
-    } catch {}
-    return [];
-  });
+  const [decks, setDecks] = useDeckStorage([]);
 
   const [selectedDeckId, setSelectedDeckId] = useState(() => decks[0]?.id ?? null);
   const [search, setSearch] = useState("");
@@ -97,13 +89,6 @@ export default function App() {
     setSelectedDeckId(decks[0].id);
   }, [decks, selectedDeckId]);
 
-  // Persist decks
-  useEffect(() => {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(serializeDecks(decks)));
-    } catch {}
-  }, [decks]);
-
   // Persist settings
   useEffect(() => {
     try {
@@ -120,8 +105,10 @@ export default function App() {
       const saved = localStorage.getItem(LS_SETTINGS_KEY);
       if (!saved) return;
       const s = JSON.parse(saved);
-      if (typeof s.autoRefreshOnLoad === "boolean") setAutoRefreshOnLoad(s.autoRefreshOnLoad);
-      if (typeof s.autoRefreshIntervalMin === "number") setAutoRefreshIntervalMin(s.autoRefreshIntervalMin);
+      if (typeof s.autoRefreshOnLoad === "boolean")
+        setAutoRefreshOnLoad(s.autoRefreshOnLoad);
+      if (typeof s.autoRefreshIntervalMin === "number")
+        setAutoRefreshIntervalMin(s.autoRefreshIntervalMin);
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -149,7 +136,11 @@ export default function App() {
           // ensure builtin flag stays true if it exists
           for (let i = 0; i < next.length; i++) {
             if (next[i].id === b.id) {
-              next[i] = { ...next[i], builtin: true, source: { type: "google_sheet_tab", tabUrl: b.tabUrl } };
+              next[i] = {
+                ...next[i],
+                builtin: true,
+                source: { type: "google_sheet_tab", tabUrl: b.tabUrl },
+              };
               break;
             }
           }
@@ -171,9 +162,7 @@ export default function App() {
     const q = search.toLowerCase().trim();
     if (!q) return selectedDeck.cards;
     return selectedDeck.cards.filter(
-      (c) =>
-        c.question.toLowerCase().includes(q) ||
-        c.answer.toLowerCase().includes(q)
+      (c) => c.question.toLowerCase().includes(q) || c.answer.toLowerCase().includes(q)
     );
   }, [selectedDeck, search]);
 
@@ -215,7 +204,10 @@ export default function App() {
     const existingHidden = deck.hiddenIds ?? new Set();
     const existingName = deck.name;
 
-    const refreshed = await importDeckFromPublishedTabUrl(deck.source.tabUrl, existingName);
+    const refreshed = await importDeckFromPublishedTabUrl(
+      deck.source.tabUrl,
+      existingName
+    );
 
     setDecks((prev) =>
       prev.map((d) => {
@@ -281,7 +273,11 @@ export default function App() {
       setDecks((prev) => {
         const exists = prev.some((d) => d.id === newDeck.id);
         return exists
-          ? prev.map((d) => (d.id === newDeck.id ? { ...newDeck, hiddenIds: d.hiddenIds, lastSyncAt: Date.now() } : d))
+          ? prev.map((d) =>
+              d.id === newDeck.id
+                ? { ...newDeck, hiddenIds: d.hiddenIds, lastSyncAt: Date.now() }
+                : d
+            )
           : [{ ...newDeck, lastSyncAt: Date.now() }, ...prev];
       });
 
@@ -313,7 +309,11 @@ export default function App() {
         setDecks((prev) => {
           const exists = prev.some((x) => x.id === d.id);
           return exists
-            ? prev.map((x) => (x.id === d.id ? { ...d, hiddenIds: x.hiddenIds, lastSyncAt: Date.now() } : x))
+            ? prev.map((x) =>
+                x.id === d.id
+                  ? { ...d, hiddenIds: x.hiddenIds, lastSyncAt: Date.now() }
+                  : x
+              )
             : [{ ...d, lastSyncAt: Date.now() }, ...prev];
         });
       }
@@ -364,19 +364,20 @@ export default function App() {
             <section className="admin-layout">
               <aside className="stack">
                 <ImportDeck
-  importUrl={importUrl}
-  setImportUrl={setImportUrl}
-  importName={importName}
-  setImportName={setImportName}
-  importStatus={importStatus}
-  importBusy={importBusy}
-  onImport={handleImportDeck}
-/>
+                  importUrl={importUrl}
+                  setImportUrl={setImportUrl}
+                  importName={importName}
+                  setImportName={setImportName}
+                  importStatus={importStatus}
+                  importBusy={importBusy}
+                  onImport={handleImportDeck}
+                />
 
                 <div className="card">
                   <h2>Import deck index</h2>
                   <div className="muted">
-                    Index tab columns: <strong>Name</strong>, <strong>URL</strong>. Each row imports a deck.
+                    Index tab columns: <strong>Name</strong>, <strong>URL</strong>. Each
+                    row imports a deck.
                   </div>
 
                   <div className="row" style={{ marginTop: 12 }}>
@@ -477,8 +478,8 @@ export default function App() {
                 </div>
 
                 <div className="muted" style={{ marginTop: 10 }}>
-                  Cards: <strong>{selectedDeck?.cards?.length ?? 0}</strong>{" "}
-                  | Hidden: <strong>{selectedDeck?.hiddenIds?.size ?? 0}</strong>{" "}
+                  Cards: <strong>{selectedDeck?.cards?.length ?? 0}</strong> | Hidden:{" "}
+                  <strong>{selectedDeck?.hiddenIds?.size ?? 0}</strong>{" "}
                   {selectedDeck?.lastSyncAt ? (
                     <>
                       | Last sync: <strong>{formatTime(selectedDeck.lastSyncAt)}</strong>
@@ -501,8 +502,7 @@ export default function App() {
 
                           <div className="row row-tight">
                             <div className="muted">
-                              Status:{" "}
-                              <strong>{isHidden ? "hidden" : "remaining"}</strong>
+                              Status: <strong>{isHidden ? "hidden" : "remaining"}</strong>
                             </div>
                             <button
                               className={`btn ${isHidden ? "" : "success"}`}
@@ -535,11 +535,7 @@ export default function App() {
 
 /* ---------------- Admin: Deck Row ---------------- */
 
-
-
 /* ---------------- Drill ---------------- */
-
-
 
 function shuffleArray(arr) {
   const a = arr.slice();
