@@ -1,0 +1,426 @@
+:root{
+  --bg: #4c566a;
+  --panel: rgba(255,255,255,0.10);
+  --panel-strong: rgba(255,255,255,0.16);
+  --border: rgba(255,255,255,0.15);
+
+  --text: #f1f3f8;
+  --muted: rgba(241,243,248,0.75);
+
+  --primary: #7c5cff;
+  --secondary: #00c9a7;
+  --accent: #ff8a65;
+  --danger: #ff5c7a;
+
+  --radius: 18px;
+  --shadow: 0 12px 28px rgba(0,0,0,0.25);
+}
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(800px 500px at 10% 15%, #5e6a87 0%, transparent 60%),
+    radial-gradient(700px 500px at 85% 20%, #55617d 0%, transparent 60%),
+    radial-gradient(900px 700px at 50% 100%, #40495e 0%, transparent 70%),
+    var(--bg);
+  min-height:100vh;
+}
+
+/* ---- App shell ---- */
+
+.header{
+  padding: 14px;
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.20);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight: 800;
+}
+
+.logo{
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.nav{
+  display:flex;
+  gap: 8px;
+}
+
+.tab-btn{
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab-btn.is-active{
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: transparent;
+  color: #fff;
+}
+
+.main{
+  padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.muted{
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.screen-pad{
+  padding-bottom: 24px; /* extra drill padding */
+}
+
+/* ---- Admin layout + lists ---- */
+
+.admin-layout{
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 980px){
+  .admin-layout{
+    grid-template-columns: 350px 1fr;
+    align-items: start;
+  }
+}
+
+.stack{ display: grid; gap: 14px; }
+
+.deck-list{
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.deck-item{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: var(--panel-strong);
+}
+
+.deck-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.deck-meta{
+  display:flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.deck-actions{
+  margin-top: 10px;
+}
+
+.pill{
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.row-tight{
+  margin-top: 10px;
+  align-items: center;
+}
+
+.scroll{
+  margin-top: 12px;
+  max-height: 55vh;
+  overflow: auto;
+  padding-right: 6px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+.card-row{
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.card-row:last-child{
+  border-bottom: none;
+}
+
+.q{
+  font-weight: 800;
+}
+
+.a{
+  margin-top: 6px;
+}
+
+.input{
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+/* --- Center the entire app content --- */
+.app{
+  min-height: 100vh;
+}
+
+.main{
+  padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;          /* <-- centers */
+}
+
+.header{
+  width: 100%;
+}
+
+.topbar{
+  max-width: 1100px;
+  margin: 0 auto;          /* <-- centers */
+  padding: 0 0;            /* keep clean */
+}
+
+/* ===== HARD CENTERING (guaranteed) ===== */
+.container{
+  width: min(1100px, calc(100% - 32px));
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.main{
+  padding: 16px 0; /* container controls side padding */
+}
+
+/* Optional: make sure nothing forces left alignment */
+.topbar{
+  width: 100%;
+}
+
+body #root, body .app{
+  width: 100%;
+}
+
+/* ===== DRILL STYLING ===== */
+
+.screen-pad{
+  padding-bottom: 48px;
+}
+
+/* Drill top controls */
+.progress{
+  display:flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Flashcard */
+.flashcard{
+  margin-top: 20px;
+  padding: 36px 28px;
+  border-radius: 22px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  min-height: 280px;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+}
+
+/* Question / Answer labels */
+.label{
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+/* Main text */
+.side{
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.4;
+  max-width: 700px;
+}
+
+/* Muted answer before flip */
+.side.muted{
+  opacity: 0.6;
+  font-weight: 600;
+}
+
+/* Button row spacing */
+.row{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.row > *{
+  flex: 1 1 140px;
+}
+
+/* Improve button feel */
+.btn{
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor:pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.btn:hover{
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.btn:active{
+  transform: translateY(0);
+}
+
+/* ===== 3D FLIP CARD ===== */
+
+/* ===== 3D FLIP CARD (deeper + slower) ===== */
+
+.flip-wrap{
+  display:flex;
+  justify-content:center;
+}
+
+.flip-card{
+  width: 100%;
+  max-width: 780px;
+  min-height: 300px;
+
+  /* more depth */
+  perspective: 1800px;
+  perspective-origin: 50% 40%;
+}
+
+.flip-inner{
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+
+  transform-style: preserve-3d;
+
+  /* slower + smoother */
+  transition: transform 820ms cubic-bezier(.18,.88,.2,1);
+
+  /* subtle “physical” feel */
+  will-change: transform;
+}
+
+.flip-card.is-flipped .flip-inner{
+  /* slight tilt adds depth (optional but helps) */
+  transform: rotateY(180deg) rotateX(2deg);
+}
+
+/* add a tiny front tilt too, for consistent depth */
+.flip-card:not(.is-flipped) .flip-inner{
+  transform: rotateY(0deg) rotateX(2deg);
+}
+
+.flip-face{
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+
+  padding: 36px 28px;
+
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+
+  /* subtle lighting/shading */
+  background-image:
+    radial-gradient(800px 280px at 30% 10%, rgba(255,255,255,0.10), transparent 55%),
+    radial-gradient(700px 260px at 80% 90%, rgba(0,0,0,0.18), transparent 60%);
+}
+
+/* back face */
+.flip-back{
+  transform: rotateY(180deg);
+}
+
+/* extra “edge” depth: faint border highlight */
+.flip-face::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events:none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.20);
+}
+
+/* mobile sizing */
+@media (max-width: 520px){
+  .flip-card,
+  .flip-inner{
+    min-height: 260px;
+  }
+  .flip-face{
+    padding: 26px 18px;
+  }
+}
