@@ -4,6 +4,7 @@ import DrillView from "./components/drill/DrillView";
 import ImportDeck from "./components/admin/ImportDeck";
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import ImportIndex from "./components/admin/ImportIndex";
+import Header from "./components/layout/Header";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -330,34 +331,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header">
-        <div className="container">
-          <div className="topbar">
-            <div className="brand">
-              <div className="logo" aria-hidden="true" />
-              ReactCards
-            </div>
-
-            <nav className="nav">
-              <button
-                className={`tab-btn ${activeTab === "admin" ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActiveTab("admin")}
-              >
-                Admin
-              </button>
-
-              <button
-                className={`tab-btn ${activeTab === "drill" ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActiveTab("drill")}
-              >
-                Drill
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="main">
         <div className="container">
