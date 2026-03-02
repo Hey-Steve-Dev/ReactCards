@@ -14,10 +14,6 @@ import { useSheetsDeckActions } from "./hooks/useSheetDeckActions";
 
 const LS_SETTINGS_KEY = "reactcards_settings_v1";
 
-function isSheetDeck(deck) {
-  return deck?.source?.type === "google_sheet_tab" && !!deck?.source?.tabUrl;
-}
-
 export default function App() {
   // Settings
   const [autoRefreshOnLoad, setAutoRefreshOnLoad] = useState(true);
@@ -121,16 +117,16 @@ export default function App() {
   }
 
   // Auto-refresh on load (once)
-  const didAutoRefreshRef = useRef(false);
   useEffect(() => {
-    if (!autoRefreshOnLoad) return;
-    if (didAutoRefreshRef.current) return;
-    if (!decks.length) return;
+    if (!autoRefreshIntervalMin || autoRefreshIntervalMin < 1) return;
 
-    didAutoRefreshRef.current = true;
-    refreshAllSheets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoRefreshOnLoad, decks.length]);
+    const ms = autoRefreshIntervalMin * 60 * 1000;
+    const t = setInterval(() => {
+      refreshAllSheets();
+    }, ms);
+
+    return () => clearInterval(t);
+  }, [autoRefreshIntervalMin, decks.length, refreshAllSheets]);
 
   // Optional interval refresh
   useEffect(() => {
