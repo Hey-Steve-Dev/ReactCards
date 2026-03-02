@@ -1,6 +1,7 @@
 // src/App.jsx
 import DeckRow from "./components/admin/DeckRow";
 import DrillView from "./components/drill/DrillView";
+import ImportDeck from "./components/admin/ImportDeck";
 
 
 
@@ -362,47 +363,15 @@ export default function App() {
           {activeTab === "admin" ? (
             <section className="admin-layout">
               <aside className="stack">
-                <div className="card">
-                  <h2>Import deck (Google Sheets)</h2>
-                  <div className="muted">
-                    Paste a publicly viewable Sheets link. Columns: <strong>Question</strong>, <strong>Answer</strong>.
-                    (If gid is missing, we default to the first tab.)
-                  </div>
-
-                  <div className="row" style={{ marginTop: 12 }}>
-                    <input
-                      className="input"
-                      type="url"
-                      placeholder="https://docs.google.com/spreadsheets/d/.../edit"
-                      value={importUrl}
-                      onChange={(e) => setImportUrl(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="row" style={{ marginTop: 10 }}>
-                    <input
-                      className="input"
-                      type="text"
-                      placeholder="Deck name (optional)"
-                      value={importName}
-                      onChange={(e) => setImportName(e.target.value)}
-                    />
-                    <button
-                      className="btn primary"
-                      type="button"
-                      onClick={handleImportDeck}
-                      disabled={importBusy}
-                    >
-                      {importBusy ? "Importing…" : "Import"}
-                    </button>
-                  </div>
-
-                  {importStatus ? (
-                    <div className="muted" style={{ marginTop: 10 }}>
-                      {importStatus}
-                    </div>
-                  ) : null}
-                </div>
+                <ImportDeck
+  importUrl={importUrl}
+  setImportUrl={setImportUrl}
+  importName={importName}
+  setImportName={setImportName}
+  importStatus={importStatus}
+  importBusy={importBusy}
+  onImport={handleImportDeck}
+/>
 
                 <div className="card">
                   <h2>Import deck index</h2>
