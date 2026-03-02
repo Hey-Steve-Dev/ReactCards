@@ -1,62 +1,24 @@
 // src/App.jsx
-import DeckRow from "./components/admin/DeckRow";
-import DrillView from "./components/drill/DrillView";
-import ImportDeck from "./components/admin/ImportDeck";
-import { useDeckStorage } from "./hooks/useDeckStorage";
-import ImportIndex from "./components/admin/ImportIndex";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/layout/Header";
+import ImportDeck from "./components/admin/ImportDeck";
+import ImportIndex from "./components/admin/ImportIndex";
+import AutoRefreshSettings from "./components/admin/AutoRefreshSettings";
 import DeckList from "./components/admin/DeckList";
 import AdminDeckView from "./components/admin/AdminDeckView";
+import DrillView from "./components/drill/DrillView";
+import { BUILTIN_DECK_SOURCES } from "./config/builtinDecks";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeckStorage } from "./hooks/useDeckStorage";
 import {
   importDeckFromPublishedTabUrl,
   importDeckIndexFromPublishedTabUrl,
 } from "./lib/sheetsImport";
 
-/**
- * Built-in hard-coded decks
- * - These will ALWAYS be ensured on startup (they reappear after refresh, even if deleted).
- * - Put your real permanent sheet links here.
- */
-const BUILTIN_DECK_SOURCES = [
-  // EXAMPLE: replace with your permanent sheets
-  // {
-  //   id: "builtin_python",
-  //   name: "Python (Built-in)",
-  //   tabUrl: "https://docs.google.com/spreadsheets/d/<ID>/edit#gid=0",
-  // },
-];
-
-const LS_KEY = "reactcards_decks_v2";
 const LS_SETTINGS_KEY = "reactcards_settings_v1";
-
-function serializeDecks(decks) {
-  return decks.map((d) => ({
-    ...d,
-    hiddenIds: Array.from(d.hiddenIds ?? []),
-  }));
-}
-
-function deserializeDecks(raw) {
-  const arr = Array.isArray(raw) ? raw : [];
-  return arr.map((d) => ({
-    ...d,
-    hiddenIds: new Set(d.hiddenIds ?? []),
-  }));
-}
 
 function isSheetDeck(deck) {
   return deck?.source?.type === "google_sheet_tab" && !!deck?.source?.tabUrl;
-}
-
-function formatTime(ts) {
-  if (!ts) return "";
-  try {
-    return new Date(ts).toLocaleString();
-  } catch {
-    return "";
-  }
 }
 
 export default function App() {
@@ -66,7 +28,7 @@ export default function App() {
   const [autoRefreshOnLoad, setAutoRefreshOnLoad] = useState(true);
   const [autoRefreshIntervalMin, setAutoRefreshIntervalMin] = useState(0); // 0 = off
 
-  // Decks
+  // Decks persisted via hook
   const [decks, setDecks] = useDeckStorage([]);
 
   const [selectedDeckId, setSelectedDeckId] = useState(() => decks[0]?.id ?? null);
@@ -114,7 +76,6 @@ export default function App() {
       if (typeof s.autoRefreshIntervalMin === "number")
         setAutoRefreshIntervalMin(s.autoRefreshIntervalMin);
     } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Ensure built-in decks exist (reappear after refresh)
@@ -126,6 +87,7 @@ export default function App() {
 
       for (const b of BUILTIN_DECK_SOURCES) {
         const exists = next.some((d) => d.id === b.id);
+
         if (!exists) {
           next.unshift({
             id: b.id,
@@ -137,7 +99,7 @@ export default function App() {
             lastSyncAt: 0,
           });
         } else {
-          // ensure builtin flag stays true if it exists
+          // ensure builtin flag + source stay correct
           for (let i = 0; i < next.length; i++) {
             if (next[i].id === b.id) {
               next[i] = {
@@ -153,8 +115,7 @@ export default function App() {
 
       return next;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setDecks]);
 
   const selectedDeck = useMemo(
     () => decks.find((d) => d.id === selectedDeckId) ?? null,
@@ -204,7 +165,6 @@ export default function App() {
   async function refreshDeck(deck) {
     if (!isSheetDeck(deck)) return;
 
-    // keep existing name unless user typed override; keep hidden state
     const existingHidden = deck.hiddenIds ?? new Set();
     const existingName = deck.name;
 
@@ -219,10 +179,10 @@ export default function App() {
         return {
           ...d,
           ...refreshed,
-          id: d.id, // preserve id if builtin uses custom id
+          id: d.id, // preserve custom id (built-ins)
           name: existingName,
           builtin: !!d.builtin,
-          hiddenIds: existingHidden, // keep hidden preferences across refresh
+          hiddenIds: existingHidden, // keep user progress
           lastSyncAt: Date.now(),
           source: { ...d.source, ...refreshed.source },
         };
@@ -237,7 +197,7 @@ export default function App() {
         // eslint-disable-next-line no-await-in-loop
         await refreshDeck(d);
       } catch {
-        // ignore per-deck errors (we can surface later)
+        // ignore per-deck refresh errors for now
       }
     }
   }
@@ -310,6 +270,7 @@ export default function App() {
         const { name, url } = items[i];
         // eslint-disable-next-line no-await-in-loop
         const d = await importDeckFromPublishedTabUrl(url, name);
+
         setDecks((prev) => {
           const exists = prev.some((x) => x.id === d.id);
           return exists
@@ -358,39 +319,13 @@ export default function App() {
                   onImportIndex={handleImportIndex}
                 />
 
-                <div className="card">
-                  <h2>Auto-refresh</h2>
-
-                  <label className="muted" style={{ display: "block", marginTop: 8 }}>
-                    <input
-                      type="checkbox"
-                      checked={autoRefreshOnLoad}
-                      onChange={(e) => setAutoRefreshOnLoad(e.target.checked)}
-                      style={{ marginRight: 8 }}
-                    />
-                    Refresh all sheet decks on load
-                  </label>
-
-                  <div className="row" style={{ marginTop: 12 }}>
-                    <input
-                      className="input"
-                      type="number"
-                      min="0"
-                      step="1"
-                      value={autoRefreshIntervalMin}
-                      onChange={(e) => setAutoRefreshIntervalMin(Number(e.target.value))}
-                      placeholder="0"
-                      title="0 = off"
-                    />
-                    <button className="btn" type="button" onClick={refreshAllSheets}>
-                      Refresh Now
-                    </button>
-                  </div>
-
-                  <div className="muted" style={{ marginTop: 8 }}>
-                    Interval minutes (0 = off). Refresh keeps your hidden cards.
-                  </div>
-                </div>
+                <AutoRefreshSettings
+                  autoRefreshOnLoad={autoRefreshOnLoad}
+                  setAutoRefreshOnLoad={setAutoRefreshOnLoad}
+                  autoRefreshIntervalMin={autoRefreshIntervalMin}
+                  setAutoRefreshIntervalMin={setAutoRefreshIntervalMin}
+                  onRefreshNow={refreshAllSheets}
+                />
 
                 <DeckList
                   decks={decks}
@@ -423,17 +358,4 @@ export default function App() {
       </main>
     </div>
   );
-}
-
-/* ---------------- Admin: Deck Row ---------------- */
-
-/* ---------------- Drill ---------------- */
-
-function shuffleArray(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
