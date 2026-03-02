@@ -7,15 +7,13 @@ import AutoRefreshSettings from "./components/admin/AutoRefreshSettings";
 import DeckList from "./components/admin/DeckList";
 import AdminDeckView from "./components/admin/AdminDeckView";
 import DrillView from "./components/drill/DrillView";
-import { BUILTIN_DECK_SOURCES } from "./config/builtinDecks";
+import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
 
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import {
   importDeckFromPublishedTabUrl,
   importDeckIndexFromPublishedTabUrl,
 } from "./lib/sheetsImport";
-
-const LS_SETTINGS_KEY = "reactcards_settings_v1";
 
 function isSheetDeck(deck) {
   return deck?.source?.type === "google_sheet_tab" && !!deck?.source?.tabUrl;
@@ -30,6 +28,7 @@ export default function App() {
 
   // Decks persisted via hook
   const [decks, setDecks] = useDeckStorage([]);
+  useBuiltinDecks({ decks, setDecks, autoRefresh: autoRefreshOnLoad });
 
   const [selectedDeckId, setSelectedDeckId] = useState(() => decks[0]?.id ?? null);
   const [search, setSearch] = useState("");
@@ -79,43 +78,6 @@ export default function App() {
   }, []);
 
   // Ensure built-in decks exist (reappear after refresh)
-  useEffect(() => {
-    if (!BUILTIN_DECK_SOURCES.length) return;
-
-    setDecks((prev) => {
-      const next = [...prev];
-
-      for (const b of BUILTIN_DECK_SOURCES) {
-        const exists = next.some((d) => d.id === b.id);
-
-        if (!exists) {
-          next.unshift({
-            id: b.id,
-            name: b.name,
-            source: { type: "google_sheet_tab", tabUrl: b.tabUrl },
-            cards: [],
-            hiddenIds: new Set(),
-            builtin: true,
-            lastSyncAt: 0,
-          });
-        } else {
-          // ensure builtin flag + source stay correct
-          for (let i = 0; i < next.length; i++) {
-            if (next[i].id === b.id) {
-              next[i] = {
-                ...next[i],
-                builtin: true,
-                source: { type: "google_sheet_tab", tabUrl: b.tabUrl },
-              };
-              break;
-            }
-          }
-        }
-      }
-
-      return next;
-    });
-  }, [setDecks]);
 
   const selectedDeck = useMemo(
     () => decks.find((d) => d.id === selectedDeckId) ?? null,
