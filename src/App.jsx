@@ -4,9 +4,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import Header from "./components/layout/Header";
 
-import DrillView from "./components/drill/DrillView";
 import About from "./pages/About";
 import Admin from "./pages/Admin";
+import Drill from "./pages/Drill";
 
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
@@ -301,7 +301,7 @@ export default function App() {
             <Route
               path="/drill"
               element={
-                <DrillView
+                <Drill
                   decks={decks}
                   selectedDeckId={selectedDeckId}
                   setSelectedDeckId={setSelectedDeckId}
