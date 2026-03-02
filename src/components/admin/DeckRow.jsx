@@ -45,7 +45,12 @@ export default function DeckRow({
             autoFocus
           />
         ) : (
-          <strong>{deck.name}</strong>
+          <strong>
+            {deck.name}
+            <div className="muted" style={{ fontSize: 12 }}>
+              id: {deck.id}
+            </div>
+          </strong>
         )}
 
         {isSelected ? <span className="pill">Selected</span> : null}

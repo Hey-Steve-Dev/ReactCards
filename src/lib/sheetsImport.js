@@ -24,9 +24,10 @@ export function extractSheetIdAndGid(inputUrl) {
   const spreadsheetId = idMatch[1];
 
   const gidMatch = url.match(/[#&?]gid=(\d+)/);
-  const gid = gidMatch ? gidMatch[1] : "0";
+  const gidFound = !!gidMatch;
+  const gid = gidFound ? gidMatch[1] : "0";
 
-  return { spreadsheetId, gid };
+  return { spreadsheetId, gid, gidFound };
 }
 
 /**
@@ -111,7 +112,7 @@ function hashShort(str) {
  * Requires headers with Question/Answer (case-insensitive).
  */
 export async function importDeckFromPublishedTabUrl(tabUrl, deckNameOverride) {
-  const { spreadsheetId, gid } = extractSheetIdAndGid(tabUrl);
+  const { spreadsheetId, gid, gidFound } = extractSheetIdAndGid(tabUrl);
   const csvUrl = buildCsvUrl(spreadsheetId, gid);
 
   const res = await fetch(csvUrl);
@@ -149,14 +150,17 @@ export async function importDeckFromPublishedTabUrl(tabUrl, deckNameOverride) {
     })
     .filter(Boolean);
 
-  if (!cards.length) throw new Error("No valid cards found (need non-empty Question + Answer).");
+  if (!cards.length)
+    throw new Error("No valid cards found (need non-empty Question + Answer).");
 
   const deckName = String(deckNameOverride || "").trim() || `Imported Deck (${gid})`;
 
   return {
-    id: `sheet_${spreadsheetId}_${gid}`, // stable: importing same tab refreshes it
+    id: gidFound
+      ? `sheet_${spreadsheetId}_${gid}`
+      : `sheet_${spreadsheetId}_nogid_${hashShort(tabUrl)}`, // stable: importing same tab refreshes it
     name: deckName,
-    source: { type: "google_sheet_tab", tabUrl, spreadsheetId, gid, csvUrl },
+    source: { type: "google_sheet_tab", tabUrl, spreadsheetId, gid, gidFound, csvUrl },
     cards,
     hiddenIds: new Set(),
     builtin: false,
