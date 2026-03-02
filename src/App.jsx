@@ -5,6 +5,7 @@ import ImportDeck from "./components/admin/ImportDeck";
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import ImportIndex from "./components/admin/ImportIndex";
 import Header from "./components/layout/Header";
+import DeckList from "./components/admin/DeckList";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -390,23 +391,14 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="card">
-                  <h2>Decks</h2>
-
-                  <div className="deck-list">
-                    {decks.map((d) => (
-                      <DeckRow
-                        key={d.id}
-                        deck={d}
-                        isSelected={d.id === selectedDeckId}
-                        onSelect={() => setSelectedDeckId(d.id)}
-                        onDelete={() => deleteDeck(d.id)}
-                        onRename={(name) => renameDeck(d.id, name)}
-                        onRefresh={() => refreshDeck(d)}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <DeckList
+                  decks={decks}
+                  selectedDeckId={selectedDeckId}
+                  onSelectDeck={setSelectedDeckId}
+                  onDeleteDeck={deleteDeck}
+                  onRenameDeck={renameDeck}
+                  onRefreshDeck={refreshDeck}
+                />
               </aside>
 
               <section className="card">
