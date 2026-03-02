@@ -6,6 +6,7 @@ import { useDeckStorage } from "./hooks/useDeckStorage";
 import ImportIndex from "./components/admin/ImportIndex";
 import Header from "./components/layout/Header";
 import DeckList from "./components/admin/DeckList";
+import AdminDeckView from "./components/admin/AdminDeckView";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -401,66 +402,14 @@ export default function App() {
                 />
               </aside>
 
-              <section className="card">
-                <h2>
-                  Selected Deck:{" "}
-                  <span className="muted">{selectedDeck?.name ?? "—"}</span>
-                </h2>
-
-                <div className="row" style={{ marginTop: 10 }}>
-                  <input
-                    className="input"
-                    type="search"
-                    placeholder="Search cards..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <button className="btn success" type="button" onClick={unhideAll}>
-                    Unhide All
-                  </button>
-                </div>
-
-                <div className="muted" style={{ marginTop: 10 }}>
-                  Cards: <strong>{selectedDeck?.cards?.length ?? 0}</strong> | Hidden:{" "}
-                  <strong>{selectedDeck?.hiddenIds?.size ?? 0}</strong>{" "}
-                  {selectedDeck?.lastSyncAt ? (
-                    <>
-                      | Last sync: <strong>{formatTime(selectedDeck.lastSyncAt)}</strong>
-                    </>
-                  ) : null}
-                </div>
-
-                <div className="scroll">
-                  {!selectedDeck ? (
-                    <div className="muted" style={{ padding: "12px 0" }}>
-                      Select a deck to view cards.
-                    </div>
-                  ) : (
-                    filteredCards.map((c) => {
-                      const isHidden = selectedDeck.hiddenIds.has(c.id);
-                      return (
-                        <div className="card-row" key={c.id}>
-                          <div className="q">{c.question}</div>
-                          <div className="a muted">{c.answer}</div>
-
-                          <div className="row row-tight">
-                            <div className="muted">
-                              Status: <strong>{isHidden ? "hidden" : "remaining"}</strong>
-                            </div>
-                            <button
-                              className={`btn ${isHidden ? "" : "success"}`}
-                              type="button"
-                              onClick={() => toggleHidden(c.id)}
-                            >
-                              {isHidden ? "Unhide" : "Know It (Hide)"}
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </section>
+              <AdminDeckView
+                selectedDeck={selectedDeck}
+                search={search}
+                setSearch={setSearch}
+                onUnhideAll={unhideAll}
+                filteredCards={filteredCards}
+                onToggleHidden={toggleHidden}
+              />
             </section>
           ) : (
             <DrillView
