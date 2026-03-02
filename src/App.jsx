@@ -1,27 +1,27 @@
 // src/App.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+
 import Header from "./components/layout/Header";
-import ImportDeck from "./components/admin/ImportDeck";
-import ImportIndex from "./components/admin/ImportIndex";
-import AutoRefreshSettings from "./components/admin/AutoRefreshSettings";
-import DeckList from "./components/admin/DeckList";
-import AdminDeckView from "./components/admin/AdminDeckView";
+
 import DrillView from "./components/drill/DrillView";
-import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
+import About from "./pages/About";
+import Admin from "./pages/Admin";
 
 import { useDeckStorage } from "./hooks/useDeckStorage";
+import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
 import {
   importDeckFromPublishedTabUrl,
   importDeckIndexFromPublishedTabUrl,
 } from "./lib/sheetsImport";
+
+const LS_SETTINGS_KEY = "reactcards_settings_v1";
 
 function isSheetDeck(deck) {
   return deck?.source?.type === "google_sheet_tab" && !!deck?.source?.tabUrl;
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("admin");
-
   // Settings
   const [autoRefreshOnLoad, setAutoRefreshOnLoad] = useState(true);
   const [autoRefreshIntervalMin, setAutoRefreshIntervalMin] = useState(0); // 0 = off
@@ -76,8 +76,6 @@ export default function App() {
         setAutoRefreshIntervalMin(s.autoRefreshIntervalMin);
     } catch {}
   }, []);
-
-  // Ensure built-in decks exist (reappear after refresh)
 
   const selectedDeck = useMemo(
     () => decks.find((d) => d.id === selectedDeckId) ?? null,
@@ -141,10 +139,10 @@ export default function App() {
         return {
           ...d,
           ...refreshed,
-          id: d.id, // preserve custom id (built-ins)
+          id: d.id,
           name: existingName,
           builtin: !!d.builtin,
-          hiddenIds: existingHidden, // keep user progress
+          hiddenIds: existingHidden,
           lastSyncAt: Date.now(),
           source: { ...d.source, ...refreshed.source },
         };
@@ -256,66 +254,66 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Header />
 
       <main className="main">
         <div className="container">
-          {activeTab === "admin" ? (
-            <section className="admin-layout">
-              <aside className="stack">
-                <ImportDeck
+          <Routes>
+            <Route path="/" element={<Navigate to="/admin" replace />} />
+
+            <Route
+              path="/admin"
+              element={
+                <Admin
                   importUrl={importUrl}
                   setImportUrl={setImportUrl}
                   importName={importName}
                   setImportName={setImportName}
                   importStatus={importStatus}
                   importBusy={importBusy}
-                  onImport={handleImportDeck}
-                />
-
-                <ImportIndex
+                  onImportDeck={handleImportDeck}
                   indexUrl={indexUrl}
                   setIndexUrl={setIndexUrl}
                   indexStatus={indexStatus}
                   indexBusy={indexBusy}
                   onImportIndex={handleImportIndex}
-                />
-
-                <AutoRefreshSettings
                   autoRefreshOnLoad={autoRefreshOnLoad}
                   setAutoRefreshOnLoad={setAutoRefreshOnLoad}
                   autoRefreshIntervalMin={autoRefreshIntervalMin}
                   setAutoRefreshIntervalMin={setAutoRefreshIntervalMin}
                   onRefreshNow={refreshAllSheets}
-                />
-
-                <DeckList
                   decks={decks}
                   selectedDeckId={selectedDeckId}
-                  onSelectDeck={setSelectedDeckId}
+                  setSelectedDeckId={setSelectedDeckId}
                   onDeleteDeck={deleteDeck}
                   onRenameDeck={renameDeck}
                   onRefreshDeck={refreshDeck}
+                  selectedDeck={selectedDeck}
+                  search={search}
+                  setSearch={setSearch}
+                  onUnhideAll={unhideAll}
+                  filteredCards={filteredCards}
+                  onToggleHidden={toggleHidden}
                 />
-              </aside>
-
-              <AdminDeckView
-                selectedDeck={selectedDeck}
-                search={search}
-                setSearch={setSearch}
-                onUnhideAll={unhideAll}
-                filteredCards={filteredCards}
-                onToggleHidden={toggleHidden}
-              />
-            </section>
-          ) : (
-            <DrillView
-              decks={decks}
-              selectedDeckId={selectedDeckId}
-              setSelectedDeckId={setSelectedDeckId}
-              setDecks={setDecks}
+              }
             />
-          )}
+
+            <Route
+              path="/drill"
+              element={
+                <DrillView
+                  decks={decks}
+                  selectedDeckId={selectedDeckId}
+                  setSelectedDeckId={setSelectedDeckId}
+                  setDecks={setDecks}
+                />
+              }
+            />
+
+            <Route path="/about" element={<About />} />
+
+            <Route path="*" element={<Navigate to="/admin" replace />} />
+          </Routes>
         </div>
       </main>
     </div>

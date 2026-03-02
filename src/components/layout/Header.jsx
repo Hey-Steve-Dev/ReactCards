@@ -1,4 +1,9 @@
-export default function Header({ activeTab, setActiveTab }) {
+// src/components/layout/Header.jsx
+import { NavLink } from "react-router-dom";
+
+export default function Header() {
+  const linkClass = ({ isActive }) => `tab-btn ${isActive ? "is-active" : ""}`;
+
   return (
     <header className="header">
       <div className="container">
@@ -9,21 +14,17 @@ export default function Header({ activeTab, setActiveTab }) {
           </div>
 
           <nav className="nav">
-            <button
-              className={`tab-btn ${activeTab === "admin" ? "is-active" : ""}`}
-              type="button"
-              onClick={() => setActiveTab("admin")}
-            >
+            <NavLink to="/admin" className={linkClass} style={{ textDecoration: "none" }}>
               Admin
-            </button>
+            </NavLink>
 
-            <button
-              className={`tab-btn ${activeTab === "drill" ? "is-active" : ""}`}
-              type="button"
-              onClick={() => setActiveTab("drill")}
-            >
+            <NavLink to="/drill" className={linkClass} style={{ textDecoration: "none" }}>
               Drill
-            </button>
+            </NavLink>
+
+            <NavLink to="/about" className={linkClass} style={{ textDecoration: "none" }}>
+              About
+            </NavLink>
           </nav>
         </div>
       </div>
