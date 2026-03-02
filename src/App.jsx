@@ -10,10 +10,7 @@ import Drill from "./pages/Drill";
 
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
-import {
-  importDeckFromPublishedTabUrl,
-  importDeckIndexFromPublishedTabUrl,
-} from "./lib/sheetsImport";
+import { useSheetsDeckActions } from "./hooks/useSheetDeckActions";
 
 const LS_SETTINGS_KEY = "reactcards_settings_v1";
 
@@ -29,7 +26,8 @@ export default function App() {
   // Decks persisted via hook
   const [decks, setDecks] = useDeckStorage([]);
   useBuiltinDecks({ decks, setDecks, autoRefresh: autoRefreshOnLoad });
-
+  const { refreshDeck, refreshAllSheets, importSingleDeck, importFromIndex } =
+    useSheetsDeckActions({ decks, setDecks });
   const [selectedDeckId, setSelectedDeckId] = useState(() => decks[0]?.id ?? null);
   const [search, setSearch] = useState("");
 
@@ -122,46 +120,6 @@ export default function App() {
     setDecks((prev) => prev.map((d) => (d.id === deckId ? { ...d, name } : d)));
   }
 
-  async function refreshDeck(deck) {
-    if (!isSheetDeck(deck)) return;
-
-    const existingHidden = deck.hiddenIds ?? new Set();
-    const existingName = deck.name;
-
-    const refreshed = await importDeckFromPublishedTabUrl(
-      deck.source.tabUrl,
-      existingName
-    );
-
-    setDecks((prev) =>
-      prev.map((d) => {
-        if (d.id !== deck.id) return d;
-        return {
-          ...d,
-          ...refreshed,
-          id: d.id,
-          name: existingName,
-          builtin: !!d.builtin,
-          hiddenIds: existingHidden,
-          lastSyncAt: Date.now(),
-          source: { ...d.source, ...refreshed.source },
-        };
-      })
-    );
-  }
-
-  async function refreshAllSheets() {
-    const sheetDecks = decks.filter(isSheetDeck);
-    for (const d of sheetDecks) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        await refreshDeck(d);
-      } catch {
-        // ignore per-deck refresh errors for now
-      }
-    }
-  }
-
   // Auto-refresh on load (once)
   const didAutoRefreshRef = useRef(false);
   useEffect(() => {
@@ -192,18 +150,7 @@ export default function App() {
       setImportBusy(true);
       setImportStatus("Importing…");
 
-      const newDeck = await importDeckFromPublishedTabUrl(importUrl, importName);
-
-      setDecks((prev) => {
-        const exists = prev.some((d) => d.id === newDeck.id);
-        return exists
-          ? prev.map((d) =>
-              d.id === newDeck.id
-                ? { ...newDeck, hiddenIds: d.hiddenIds, lastSyncAt: Date.now() }
-                : d
-            )
-          : [{ ...newDeck, lastSyncAt: Date.now() }, ...prev];
-      });
+      const newDeck = await importSingleDeck({ url: importUrl, name: importName });
 
       setSelectedDeckId(newDeck.id);
       setSearch("");
@@ -222,28 +169,14 @@ export default function App() {
       setIndexBusy(true);
       setIndexStatus("Reading index…");
 
-      const items = await importDeckIndexFromPublishedTabUrl(indexUrl);
+      const count = await importFromIndex({
+        indexUrl,
+        onProgress: ({ step, total, name }) => {
+          setIndexStatus(`Importing ${step}/${total}: ${name}`);
+        },
+      });
 
-      setIndexStatus(`Index found ${items.length} decks. Importing…`);
-
-      for (let i = 0; i < items.length; i++) {
-        const { name, url } = items[i];
-        // eslint-disable-next-line no-await-in-loop
-        const d = await importDeckFromPublishedTabUrl(url, name);
-
-        setDecks((prev) => {
-          const exists = prev.some((x) => x.id === d.id);
-          return exists
-            ? prev.map((x) =>
-                x.id === d.id
-                  ? { ...d, hiddenIds: x.hiddenIds, lastSyncAt: Date.now() }
-                  : x
-              )
-            : [{ ...d, lastSyncAt: Date.now() }, ...prev];
-        });
-      }
-
-      setIndexStatus("Index import complete ✅");
+      setIndexStatus(`Index import complete ✅ (${count} decks)`);
       setIndexUrl("");
     } catch (e) {
       setIndexStatus(e?.message || "Index import failed.");
@@ -251,7 +184,6 @@ export default function App() {
       setIndexBusy(false);
     }
   }
-
   return (
     <div className="app">
       <Header />
