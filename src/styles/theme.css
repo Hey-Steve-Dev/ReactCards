@@ -52,7 +52,7 @@ body {
   backdrop-filter: blur(10px);
   background: rgba(0, 0, 0, 0.18);
   border-bottom: 1px solid var(--border);
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 10;
 }

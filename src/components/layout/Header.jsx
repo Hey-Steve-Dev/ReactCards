@@ -11,7 +11,7 @@ export default function Header() {
         <div className="topbar">
           <div className="brand">
             <img src={logo} alt="App icon" className="brand-logo" />
-            Flashcards
+            ReactCards
           </div>
 
           <nav className="nav">
