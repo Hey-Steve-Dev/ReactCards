@@ -5,7 +5,13 @@ export default function DrillView({
   selectedDeckId,
   setSelectedDeckId,
   setDecks,
+  renderText,
 }) {
+  const render = useMemo(() => {
+    if (typeof renderText === "function") return renderText;
+    return (t) => String(t ?? "");
+  }, [renderText]);
+
   const deck = useMemo(
     () => decks.find((d) => d.id === selectedDeckId) ?? null,
     [decks, selectedDeckId]
@@ -147,7 +153,7 @@ export default function DrillView({
             <div className="flip-inner">
               <div className="flip-face flip-front">
                 <div className="label">Question</div>
-                <div className="side">{card.question}</div>
+                <div className="side">{render(card.question)}</div>
                 <div className="muted" style={{ marginTop: 10 }}>
                   Tap Flip to reveal
                 </div>
@@ -155,7 +161,7 @@ export default function DrillView({
 
               <div className="flip-face flip-back">
                 <div className="label">Answer</div>
-                <div className="side">{card.answer}</div>
+                <div className="side">{render(card.answer)}</div>
                 <div className="muted" style={{ marginTop: 10 }}>
                   Tap Flip to go back
                 </div>

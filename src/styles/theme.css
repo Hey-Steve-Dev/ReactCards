@@ -1,78 +1,87 @@
-:root{
-  --bg: #4c566a;
-  --panel: rgba(255,255,255,0.10);
-  --panel-strong: rgba(255,255,255,0.16);
-  --border: rgba(255,255,255,0.15);
+:root {
+  /* --- New palette: "Coastal Dusk" (mid-tone, colorful, not too dark) --- */
+  --bg: #556580;
 
-  --text: #f1f3f8;
-  --muted: rgba(241,243,248,0.75);
+  --panel: rgba(255, 255, 255, 0.11);
+  --panel-strong: rgba(255, 255, 255, 0.17);
+  --border: rgba(255, 255, 255, 0.16);
 
-  --primary: #7c5cff;
-  --secondary: #00c9a7;
-  --accent: #ff8a65;
-  --danger: #ff5c7a;
+  --text: #f3f6ff;
+  --muted: rgba(243, 246, 255, 0.74);
+
+  --primary: #6f7bff; /* periwinkle */
+  --secondary: #00d6c7; /* teal */
+  --accent: #ff9a7a; /* coral */
+  --danger: #ff5a83; /* pink-red */
 
   --radius: 18px;
-  --shadow: 0 12px 28px rgba(0,0,0,0.25);
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
 }
 
-*{
+* {
   box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
   color: var(--text);
+
+  /* Updated background to match the new palette (still mid-tone) */
   background:
-    radial-gradient(800px 500px at 10% 15%, #5e6a87 0%, transparent 60%),
-    radial-gradient(700px 500px at 85% 20%, #55617d 0%, transparent 60%),
-    radial-gradient(900px 700px at 50% 100%, #40495e 0%, transparent 70%),
-    var(--bg);
-  min-height:100vh;
+    radial-gradient(900px 560px at 12% 12%, #6b7aa0 0%, transparent 60%),
+    radial-gradient(760px 520px at 86% 18%, #5c6e95 0%, transparent 60%),
+    radial-gradient(980px 760px at 50% 105%, #46526d 0%, transparent 72%), var(--bg);
+
+  min-height: 100vh;
 }
 
 /* ---- App shell ---- */
 
-.header{
+.header {
   padding: 14px;
   backdrop-filter: blur(10px);
-  background: rgba(0,0,0,0.20);
+  background: rgba(0, 0, 0, 0.18);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   max-width: 1100px;
   margin: 0 auto;
   gap: 12px;
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 800;
 }
 
-.logo{
+.logo {
   width: 32px;
   height: 32px;
   border-radius: 10px;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
 }
 
-.nav{
-  display:flex;
+.nav {
+  display: flex;
   gap: 8px;
 }
 
-.tab-btn{
+.tab-btn {
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--text);
@@ -80,21 +89,27 @@ body{
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
+
+  /* Router-safe */
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tab-btn.is-active{
+.tab-btn.is-active {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   border-color: transparent;
   color: #fff;
 }
 
-.main{
+.main {
   padding: 16px;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-.card{
+.card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -102,156 +117,170 @@ body{
   box-shadow: var(--shadow);
 }
 
-.muted{
+.muted {
   color: var(--muted);
   font-size: 14px;
 }
 
-.screen-pad{
+.screen-pad {
   padding-bottom: 24px; /* extra drill padding */
 }
 
 /* ---- Admin layout + lists ---- */
 
-.admin-layout{
+.admin-layout {
   display: grid;
   gap: 16px;
 }
 
-@media (min-width: 980px){
-  .admin-layout{
+@media (min-width: 980px) {
+  .admin-layout {
     grid-template-columns: 350px 1fr;
     align-items: start;
   }
 }
 
-.stack{ display: grid; gap: 14px; }
+.stack {
+  display: grid;
+  gap: 14px;
+}
 
-.deck-list{
+.deck-list {
   display: grid;
   gap: 10px;
   margin-top: 12px;
 }
 
-.deck-item{
+.deck-item {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
   background: var(--panel-strong);
 }
 
-.deck-title{
+.deck-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
 
-.deck-meta{
-  display:flex;
+.deck-meta {
+  display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 8px;
 }
 
-.deck-actions{
+.deck-actions {
   margin-top: 10px;
 }
 
-.pill{
+.pill {
   font-size: 12px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.row-tight{
+.row-tight {
   margin-top: 10px;
   align-items: center;
 }
 
-.scroll{
+.scroll {
   margin-top: 12px;
   max-height: 55vh;
   overflow: auto;
   padding-right: 6px;
-  border-top: 1px solid rgba(255,255,255,0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-row{
+.card-row {
   padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.10);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-row:last-child{
+.card-row:last-child {
   border-bottom: none;
 }
 
-.q{
+.q {
   font-weight: 800;
 }
 
-.a{
+.a {
   margin-top: 6px;
 }
 
-.input{
+.input {
   background: var(--panel-strong);
   border: 1px solid var(--border);
   color: var(--text);
 }
+.input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: rgba(243, 246, 255, 0.55); /* brighter than muted */
+  opacity: 1; /* important for Firefox */
+}
 
+/* Optional: make it pop even more on focus */
+.input:focus::placeholder {
+  color: rgba(243, 246, 255, 0.7);
+}
 /* --- Center the entire app content --- */
-.app{
+.app {
   min-height: 100vh;
 }
 
-.main{
+.main {
   padding: 16px;
   max-width: 1100px;
-  margin: 0 auto;          /* <-- centers */
+  margin: 0 auto; /* <-- centers */
 }
 
-.header{
+.header {
   width: 100%;
 }
 
-.topbar{
+.topbar {
   max-width: 1100px;
-  margin: 0 auto;          /* <-- centers */
-  padding: 0 0;            /* keep clean */
+  margin: 0 auto; /* <-- centers */
+  padding: 0 0; /* keep clean */
 }
 
 /* ===== HARD CENTERING (guaranteed) ===== */
-.container{
+.container {
   width: min(1100px, calc(100% - 32px));
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.main{
+.main {
   padding: 16px 0; /* container controls side padding */
 }
 
 /* Optional: make sure nothing forces left alignment */
-.topbar{
+.topbar {
   width: 100%;
 }
 
-body #root, body .app{
+body #root,
+body .app {
   width: 100%;
 }
 
 /* ===== DRILL STYLING ===== */
 
-.screen-pad{
+.screen-pad {
   padding-bottom: 48px;
 }
 
 /* Drill top controls */
-.progress{
-  display:flex;
+.progress {
+  display: flex;
   justify-content: space-between;
   margin-top: 12px;
   font-size: 14px;
@@ -259,7 +288,7 @@ body #root, body .app{
 }
 
 /* Flashcard */
-.flashcard{
+.flashcard {
   margin-top: 20px;
   padding: 36px 28px;
   border-radius: 22px;
@@ -268,16 +297,17 @@ body #root, body .app{
   box-shadow: var(--shadow);
   min-height: 280px;
 
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 14px;
+
+  /* remove forced centering */
+  align-items: stretch; /* or just delete align-items */
+  text-align: left; /* let content control its own alignment */
 }
 
 /* Question / Answer labels */
-.label{
+.label {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -286,58 +316,93 @@ body #root, body .app{
 }
 
 /* Main text */
-.side{
+.side {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 600; /* was 800 */
   line-height: 1.4;
-  max-width: 700px;
 }
 
 /* Muted answer before flip */
-.side.muted{
+.side.muted {
   opacity: 0.6;
   font-weight: 600;
 }
 
 /* Button row spacing */
-.row{
-  display:flex;
+.row {
+  display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.row > *{
+.row > * {
   flex: 1 1 140px;
 }
 
 /* Improve button feel */
-.btn{
+.btn {
   padding: 12px 16px;
   border-radius: 14px;
   font-weight: 700;
-  cursor:pointer;
-  transition: transform 0.12s ease, opacity 0.12s ease;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease;
+
+  /* safe defaults so buttons/selects look consistent */
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text);
 }
 
-.btn:hover{
+.btn:hover {
   transform: translateY(-2px);
   opacity: 0.95;
 }
 
-.btn:active{
+.btn:active {
   transform: translateY(0);
 }
 
-/* ===== 3D FLIP CARD ===== */
+/* If you already have variants elsewhere, these won’t break layout */
+.btn.primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: transparent;
+  color: #fff;
+}
+.btn.success {
+  background: linear-gradient(135deg, var(--secondary), #54f0e1);
+  border-color: transparent;
+  color: #05211f;
+}
+.btn.accent {
+  background: linear-gradient(135deg, var(--accent), #ffc0ad);
+  border-color: transparent;
+  color: #2a0c05;
+}
+.btn.danger {
+  background: linear-gradient(135deg, var(--danger), #ff9ab0);
+  border-color: transparent;
+  color: #2a0010;
+}
+
+/* Make selects match inputs/buttons without changing layout */
+select {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
 
 /* ===== 3D FLIP CARD (deeper + slower) ===== */
 
-.flip-wrap{
-  display:flex;
-  justify-content:center;
+.flip-wrap {
+  display: flex;
+  justify-content: center;
 }
 
-.flip-card{
+.flip-card {
   width: 100%;
   max-width: 780px;
   min-height: 300px;
@@ -347,7 +412,7 @@ body #root, body .app{
   perspective-origin: 50% 40%;
 }
 
-.flip-inner{
+.flip-inner {
   position: relative;
   width: 100%;
   min-height: 300px;
@@ -355,23 +420,23 @@ body #root, body .app{
   transform-style: preserve-3d;
 
   /* slower + smoother */
-  transition: transform 820ms cubic-bezier(.18,.88,.2,1);
+  transition: transform 820ms cubic-bezier(0.18, 0.88, 0.2, 1);
 
   /* subtle “physical” feel */
   will-change: transform;
 }
 
-.flip-card.is-flipped .flip-inner{
+.flip-card.is-flipped .flip-inner {
   /* slight tilt adds depth (optional but helps) */
   transform: rotateY(180deg) rotateX(2deg);
 }
 
 /* add a tiny front tilt too, for consistent depth */
-.flip-card:not(.is-flipped) .flip-inner{
+.flip-card:not(.is-flipped) .flip-inner {
   transform: rotateY(0deg) rotateX(2deg);
 }
 
-.flip-face{
+.flip-face {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
@@ -384,7 +449,7 @@ body #root, body .app{
 
   padding: 36px 28px;
 
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -393,34 +458,234 @@ body #root, body .app{
 
   /* subtle lighting/shading */
   background-image:
-    radial-gradient(800px 280px at 30% 10%, rgba(255,255,255,0.10), transparent 55%),
-    radial-gradient(700px 260px at 80% 90%, rgba(0,0,0,0.18), transparent 60%);
+    radial-gradient(800px 280px at 30% 10%, rgba(255, 255, 255, 0.1), transparent 55%),
+    radial-gradient(700px 260px at 80% 90%, rgba(0, 0, 0, 0.18), transparent 60%);
 }
 
 /* back face */
-.flip-back{
+.flip-back {
   transform: rotateY(180deg);
 }
 
 /* extra “edge” depth: faint border highlight */
-.flip-face::before{
-  content:"";
-  position:absolute;
+.flip-face::before {
+  content: "";
+  position: absolute;
   inset: 0;
   border-radius: 22px;
-  pointer-events:none;
+  pointer-events: none;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.12),
-    inset 0 -1px 0 rgba(0,0,0,0.20);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* mobile sizing */
-@media (max-width: 520px){
+@media (max-width: 520px) {
   .flip-card,
-  .flip-inner{
+  .flip-inner {
     min-height: 260px;
   }
-  .flip-face{
+  .flip-face {
     padding: 26px 18px;
   }
+}
+
+/* ===== ADMIN GRID OVERLAP FIX ===== */
+
+/* Let grid items actually shrink inside their columns */
+.admin-layout > * {
+  min-width: 0;
+}
+
+/* Make the columns “shrink-safe” */
+@media (min-width: 980px) {
+  .admin-layout {
+    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
+  }
+}
+
+/* Prevent long strings from blasting through the column */
+.admin-layout,
+.admin-layout * {
+  overflow-wrap: anywhere;
+  word-break: break-word; /* helps with long URLs */
+}
+
+/* If the right panel contains tables/code that force width */
+.admin-layout .card {
+  overflow: hidden; /* keeps visual containment */
+}
+.admin-layout .scroll {
+  overflow: auto;
+}
+
+/* --- Header responsive fix: allow buttons to wrap instead of truncating --- */
+.topbar {
+  flex-wrap: wrap; /* allow second row */
+  align-items: center;
+}
+
+.nav {
+  flex-wrap: wrap; /* wrap buttons */
+  justify-content: flex-end;
+  width: 100%; /* nav can take full row when it wraps */
+  gap: 8px;
+}
+
+/* tighten buttons a bit on smaller screens */
+@media (max-width: 520px) {
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap; /* keep labels intact */
+  }
+}
+
+/* ===== Drill card: disable forced centering ===== */
+
+/* Stop centering content inside the drill card */
+.flip-face {
+  align-items: stretch; /* was center */
+  text-align: left; /* was center */
+}
+
+/* Optional: if you don't want vertical centering either */
+.flip-face {
+  justify-content: flex-start; /* was center */
+}
+/* Limit drill card width */
+.flip-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Fix dropdown readability */
+select option {
+  background: #46526d;
+  color: #f3f6ff;
+}
+/* ===== Admin: 2 columns on top, tools row at bottom ===== */
+
+.admin-layout--grid {
+  display: grid;
+  gap: 16px;
+  min-height: 0; /* critical for scroll children */
+}
+
+/* Desktop layout: top row 2 columns, bottom row spans both */
+@media (min-width: 980px) {
+  .admin-layout--grid {
+    grid-template-columns: 350px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "decks view"
+      "tools tools";
+    align-items: stretch;
+  }
+
+  .admin-decks {
+    grid-area: decks;
+    min-height: 0; /* critical */
+  }
+
+  .admin-view {
+    grid-area: view;
+    min-height: 0; /* critical */
+  }
+
+  .admin-tools {
+    grid-area: tools;
+  }
+}
+
+/* Mobile: stack sections */
+@media (max-width: 979px) {
+  .admin-layout--grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "decks"
+      "view"
+      "tools";
+  }
+}
+
+/* Make the DeckList card itself a scroll container */
+.admin-decks .card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* critical */
+}
+
+/* Scroll ONLY the deck list */
+.admin-decks .deck-list {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  padding-right: 6px;
+}
+
+/* Bottom tools layout: 3 cards in a row on desktop */
+.admin-tools-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 980px) {
+  .admin-tools-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+/* ===== Make top admin row equal height ===== */
+
+/* ===== Admin: equal-height top row + scrollbars on BOTH panels ===== */
+
+@media (min-width: 980px) {
+  .admin-layout--grid {
+    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "decks view"
+      "tools tools";
+
+    /* This creates the “same height” row so both sides can scroll */
+    height: calc(100vh - 140px); /* tweak number if needed */
+  }
+
+  .admin-decks,
+  .admin-view {
+    min-height: 0; /* REQUIRED for overflow in grid children */
+  }
+}
+
+/* LEFT: Decks card fills its grid cell */
+.admin-decks .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* LEFT: only the list scrolls (header stays visible) */
+.admin-decks .deck-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+/* RIGHT: AdminDeckView card fills its grid cell */
+.admin-view .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* RIGHT: make its scroll area scroll */
+.admin-view .scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }

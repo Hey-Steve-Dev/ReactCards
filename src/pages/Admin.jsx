@@ -6,7 +6,6 @@ import DeckList from "../components/admin/DeckList";
 import AdminDeckView from "../components/admin/AdminDeckView";
 
 export default function Admin({
-  // import deck
   importUrl,
   setImportUrl,
   importName,
@@ -15,21 +14,18 @@ export default function Admin({
   importBusy,
   onImportDeck,
 
-  // import index
   indexUrl,
   setIndexUrl,
   indexStatus,
   indexBusy,
   onImportIndex,
 
-  // refresh settings
   autoRefreshOnLoad,
   setAutoRefreshOnLoad,
   autoRefreshIntervalMin,
   setAutoRefreshIntervalMin,
   onRefreshNow,
 
-  // decks
   decks,
   selectedDeckId,
   setSelectedDeckId,
@@ -37,7 +33,6 @@ export default function Admin({
   onRenameDeck,
   onRefreshDeck,
 
-  // cards panel
   selectedDeck,
   search,
   setSearch,
@@ -46,34 +41,9 @@ export default function Admin({
   onToggleHidden,
 }) {
   return (
-    <section className="admin-layout">
-      <aside className="stack">
-        <ImportDeck
-          importUrl={importUrl}
-          setImportUrl={setImportUrl}
-          importName={importName}
-          setImportName={setImportName}
-          importStatus={importStatus}
-          importBusy={importBusy}
-          onImport={onImportDeck}
-        />
-
-        <ImportIndex
-          indexUrl={indexUrl}
-          setIndexUrl={setIndexUrl}
-          indexStatus={indexStatus}
-          indexBusy={indexBusy}
-          onImportIndex={onImportIndex}
-        />
-
-        <AutoRefreshSettings
-          autoRefreshOnLoad={autoRefreshOnLoad}
-          setAutoRefreshOnLoad={setAutoRefreshOnLoad}
-          autoRefreshIntervalMin={autoRefreshIntervalMin}
-          setAutoRefreshIntervalMin={setAutoRefreshIntervalMin}
-          onRefreshNow={onRefreshNow}
-        />
-
+    <section className="admin-layout admin-layout--grid">
+      {/* LEFT: scrollable deck list */}
+      <aside className="admin-decks">
         <DeckList
           decks={decks}
           selectedDeckId={selectedDeckId}
@@ -84,14 +54,48 @@ export default function Admin({
         />
       </aside>
 
-      <AdminDeckView
-        selectedDeck={selectedDeck}
-        search={search}
-        setSearch={setSearch}
-        onUnhideAll={onUnhideAll}
-        filteredCards={filteredCards}
-        onToggleHidden={onToggleHidden}
-      />
+      {/* RIGHT: selected deck cards panel */}
+      <div className="admin-view">
+        <AdminDeckView
+          selectedDeck={selectedDeck}
+          search={search}
+          setSearch={setSearch}
+          onUnhideAll={onUnhideAll}
+          filteredCards={filteredCards}
+          onToggleHidden={onToggleHidden}
+        />
+      </div>
+
+      {/* BOTTOM: import/refresh tools */}
+      <div className="admin-tools">
+        <div className="admin-tools-grid">
+          <ImportDeck
+            importUrl={importUrl}
+            setImportUrl={setImportUrl}
+            importName={importName}
+            setImportName={setImportName}
+            importStatus={importStatus}
+            importBusy={importBusy}
+            onImport={onImportDeck}
+          />
+
+          <ImportIndex
+            indexUrl={indexUrl}
+            setIndexUrl={setIndexUrl}
+            indexStatus={indexStatus}
+            indexBusy={indexBusy}
+            onImportIndex={onImportIndex}
+          />
+
+          <AutoRefreshSettings
+            autoRefreshOnLoad={autoRefreshOnLoad}
+            setAutoRefreshOnLoad={setAutoRefreshOnLoad}
+            autoRefreshIntervalMin={autoRefreshIntervalMin}
+            setAutoRefreshIntervalMin={setAutoRefreshIntervalMin}
+            onRefreshNow={onRefreshNow}
+          />
+        </div>
+      </div>
     </section>
   );
 }
