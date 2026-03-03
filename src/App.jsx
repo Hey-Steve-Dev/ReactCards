@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 
 import About from "./pages/About";
 import Admin from "./pages/Admin";
@@ -239,11 +240,12 @@ export default function App() {
             />
 
             <Route path="/about" element={<About />} />
-
             <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
