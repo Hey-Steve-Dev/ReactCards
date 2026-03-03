@@ -1,38 +1,88 @@
-import { useEffect, useState } from "react";
+// src/hooks/useDeckStorage.js
+import { useEffect, useRef, useState, useCallback } from "react";
 
-const LS_KEY = "reactcards_decks_v2";
+const STORAGE_KEY = "reactcards_decks_v1";
 
 function serializeDecks(decks) {
-  return decks.map((d) => ({
-    ...d,
-    hiddenIds: Array.from(d.hiddenIds ?? []),
-  }));
+  return JSON.stringify(
+    (decks || []).map((d) => ({
+      ...d,
+      hiddenIds: Array.from(d.hiddenIds ?? []),
+    }))
+  );
 }
 
 function deserializeDecks(raw) {
-  const arr = Array.isArray(raw) ? raw : [];
-  return arr.map((d) => ({
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) return [];
+
+  return parsed.map((d) => ({
     ...d,
     hiddenIds: new Set(d.hiddenIds ?? []),
   }));
 }
 
-export function useDeckStorage(initialDecks = []) {
-  const [decks, setDecks] = useState(() => {
-    try {
-      const saved = localStorage.getItem(LS_KEY);
-      if (saved) {
-        return deserializeDecks(JSON.parse(saved));
-      }
-    } catch {}
-    return initialDecks;
-  });
+/**
+ * Keep the FIRST occurrence of each id (top-of-list wins),
+ * drop the rest. This prevents duplicate React keys and “new instances”.
+ */
+function dedupeDecksById(decks) {
+  const seen = new Set();
+  const out = [];
+  for (const d of decks) {
+    const id = String(d?.id ?? "");
+    if (!id) continue;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push(d);
+  }
+  return out;
+}
 
+/**
+ * useDeckStorage(initial) -> [decks, setDecks, hydrated]
+ */
+export function useDeckStorage(initialDecks = []) {
+  const [decks, _setDecks] = useState(() => dedupeDecksById(initialDecks));
+  const [hydrated, setHydrated] = useState(false);
+
+  const didHydrateRef = useRef(false);
+
+  // Wrap setDecks so ALL writes get deduped
+  const setDecks = useCallback((next) => {
+    _setDecks((prev) => {
+      const computed = typeof next === "function" ? next(prev) : next;
+      return dedupeDecksById(Array.isArray(computed) ? computed : []);
+    });
+  }, []);
+
+  // Load once
   useEffect(() => {
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify(serializeDecks(decks)));
-    } catch {}
-  }, [decks]);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const loaded = dedupeDecksById(deserializeDecks(raw));
+        _setDecks(loaded);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setHydrated(true);
+      didHydrateRef.current = true;
+    }
+  }, []);
 
-  return [decks, setDecks];
+  // Save on change (after hydration)
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!didHydrateRef.current) return;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, serializeDecks(decks));
+    } catch {
+      // ignore
+    }
+  }, [decks, hydrated]);
+
+  return [decks, setDecks, hydrated];
 }

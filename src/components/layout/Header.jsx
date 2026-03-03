@@ -1,5 +1,6 @@
 // src/components/layout/Header.jsx
 import { NavLink } from "react-router-dom";
+import logo from "../../assets/icon.png"; // <-- adjust filename if needed
 
 export default function Header() {
   const linkClass = ({ isActive }) => `tab-btn ${isActive ? "is-active" : ""}`;
@@ -9,20 +10,20 @@ export default function Header() {
       <div className="container">
         <div className="topbar">
           <div className="brand">
-            <div className="logo" aria-hidden="true" />
-            ReactCards
+            <img src={logo} alt="App icon" className="brand-logo" />
+            Flashcards
           </div>
 
           <nav className="nav">
-            <NavLink to="/admin" className={linkClass} style={{ textDecoration: "none" }}>
+            <NavLink to="/admin" className={linkClass}>
               Admin
             </NavLink>
 
-            <NavLink to="/drill" className={linkClass} style={{ textDecoration: "none" }}>
+            <NavLink to="/drill" className={linkClass}>
               Drill
             </NavLink>
 
-            <NavLink to="/about" className={linkClass} style={{ textDecoration: "none" }}>
+            <NavLink to="/about" className={linkClass}>
               About
             </NavLink>
           </nav>

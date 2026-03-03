@@ -689,3 +689,292 @@ select option {
   min-height: 0;
   overflow: auto;
 }
+.about-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 18px;
+  border: 1px solid var(--border);
+
+  /* more solid base so it doesn't wash out */
+  background: rgba(8, 14, 28, 0.3);
+  box-shadow: var(--shadow);
+}
+
+.about-card {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 14px;
+
+  /* more solid card */
+  background: rgba(15, 22, 40, 0.55);
+
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: aboutIn 520ms ease forwards;
+}
+/* ===== ABOUT PAGE: fix washed-out transparency + add color (no JSX changes) ===== */
+
+/* Make the outer About card more solid so inner layers don't wash out */
+.card:has(h2:contains("About ReactCards")) {
+  background: rgba(10, 16, 32, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Fallback for browsers that don't support :has() / :contains():
+   This will still improve things globally for About’s inner blocks. */
+.about-hero,
+.about-flow,
+.about-card {
+  background: rgba(10, 16, 32, 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Make the hero glow more colorful + less "milky" */
+.about-hero::before {
+  opacity: 1 !important;
+  filter: blur(14px) saturate(1.35) !important;
+}
+
+/* Pipeline container: add stronger color depth */
+.about-flow {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Color wash behind pipeline */
+.about-flow::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background:
+    radial-gradient(520px 320px at 18% 20%, rgba(111, 123, 255, 0.55), transparent 60%),
+    radial-gradient(480px 320px at 80% 30%, rgba(0, 214, 199, 0.45), transparent 60%),
+    radial-gradient(620px 380px at 55% 110%, rgba(255, 154, 122, 0.45), transparent 70%);
+  opacity: 0.75;
+  filter: blur(10px) saturate(1.5);
+  pointer-events: none;
+}
+
+/* Gradient rail behind the flow items */
+.about-flow::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 75px;
+  bottom: 18px;
+  width: 8px;
+  height: 320px;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    180deg,
+    var(--primary),
+    var(--secondary),
+    var(--accent),
+    var(--danger)
+  );
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Ensure flow content sits above backgrounds */
+.about-flow > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Make flow items more “solid” and readable */
+.flow-pill {
+  background: rgba(15, 22, 40, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+.flow-row {
+  margin-left: 8px;
+}
+/* Add automatic color accents to each flow-pill, no JSX classes needed */
+.flow-pill:nth-of-type(1) {
+  box-shadow:
+    0 0 0 1px rgba(111, 123, 255, 0.25),
+    0 10px 22px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(111, 123, 255, 0.38),
+    rgba(15, 22, 40, 0.75)
+  ) !important;
+}
+.flow-pill:nth-of-type(2) {
+  box-shadow:
+    0 0 0 1px rgba(0, 214, 199, 0.22),
+    0 10px 22px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 214, 199, 0.34),
+    rgba(15, 22, 40, 0.75)
+  ) !important;
+}
+.flow-pill:nth-of-type(3) {
+  box-shadow:
+    0 0 0 1px rgba(255, 154, 122, 0.22),
+    0 10px 22px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 154, 122, 0.34),
+    rgba(15, 22, 40, 0.75)
+  ) !important;
+}
+.flow-pill:nth-of-type(4) {
+  box-shadow:
+    0 0 0 1px rgba(255, 90, 131, 0.22),
+    0 10px 22px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 90, 131, 0.3),
+    rgba(15, 22, 40, 0.75)
+  ) !important;
+}
+
+/* Make the mini cards less transparent */
+.about-card {
+  background: rgba(15, 22, 40, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25) !important;
+}
+/* ===== Bottom 3 admin tools: equal height columns ===== */
+@media (min-width: 980px) {
+  .admin-tools-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch !important; /* override align-items: start */
+    grid-auto-rows: 1fr; /* force equal row height */
+  }
+
+  /* Each grid item fills the row height */
+  .admin-tools-grid > * {
+    height: 100%;
+    min-height: 0;
+  }
+
+  /* If the component root is the card */
+  .admin-tools-grid > .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* If the card is inside the component root */
+  .admin-tools-grid > * > .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.brand-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+/* ===== Drill: Question / Answer Card Styling ===== */
+
+/* Make drill cards white instead of glass */
+.flip-face {
+  background: #ffffff !important;
+  border-width: 3px !important;
+  border-style: solid !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* QUESTION (front side) */
+.flip-card:not(.is-flipped) .flip-face {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* ANSWER (back side) */
+.flip-card.is-flipped .flip-face,
+.flip-back {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+/* Question/Answer labels */
+.label {
+  font-weight: 900;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+/* Blue label when question */
+.flip-card:not(.is-flipped) .label {
+  color: var(--primary);
+}
+
+/* Red label when answer */
+.flip-card.is-flipped .label,
+.flip-back .label {
+  color: var(--danger);
+}
+
+/* Make markdown text inherit color cleanly */
+.flip-face p,
+.flip-face strong,
+.flip-face em {
+  color: inherit;
+}
+/* Blue when question visible */
+.flip-card:not(.is-flipped) ~ .row .next-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+}
+.screen-pad .btn.primary,
+.screen-pad .btn.primary:visited {
+  background: linear-gradient(135deg, var(--danger), #ff9ab0) !important;
+  border-color: transparent !important;
+  color: #2a0010 !important;
+}
+
+.screen-pad .btn.primary:hover {
+  opacity: 0.95;
+}
+.btn.next {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.btn.next:hover {
+  opacity: 0.95;
+}
+
+.btn.select {
+  background: linear-gradient(135deg, var(--primary), #4f63ff) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.btn.select:hover {
+  opacity: 0.95;
+}
+
+.btn.rename {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.btn.rename:hover {
+  opacity: 0.95;
+}
+
+/* ===== Shuffle Button (Blue theme) ===== */
+
+.btn.shuffle {
+  background: linear-gradient(135deg, var(--primary), #4f63ff) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.btn.shuffle:hover {
+  opacity: 0.95;
+}

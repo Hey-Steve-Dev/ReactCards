@@ -20,8 +20,8 @@ export default function App() {
   const [autoRefreshIntervalMin, setAutoRefreshIntervalMin] = useState(0); // 0 = off
 
   // Decks persisted via hook
-  const [decks, setDecks] = useDeckStorage([]);
-  useBuiltinDecks({ decks, setDecks, autoRefresh: autoRefreshOnLoad });
+  const [decks, setDecks, hydrated] = useDeckStorage([]);
+  useBuiltinDecks({ setDecks, autoRefresh: autoRefreshOnLoad, hydrated });
   const { refreshDeck, refreshAllSheets, importSingleDeck, importFromIndex } =
     useSheetsDeckActions({ decks, setDecks });
   const [selectedDeckId, setSelectedDeckId] = useState(() => decks[0]?.id ?? null);

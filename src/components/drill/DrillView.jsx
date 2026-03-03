@@ -117,7 +117,7 @@ export default function DrillView({
             ))}
           </select>
 
-          <button className="btn" type="button" onClick={shuffle}>
+          <button className="btn shuffle" type="button" onClick={shuffle}>
             Shuffle
           </button>
 
@@ -175,7 +175,7 @@ export default function DrillView({
         <button className="btn primary" type="button" onClick={flip}>
           Flip
         </button>
-        <button className="btn" type="button" onClick={next}>
+        <button className="btn next" type="button" onClick={next}>
           Next
         </button>
         <button className="btn success" type="button" onClick={knowIt}>

@@ -58,12 +58,12 @@ export default function DeckRow({
       </div>
 
       <div className="row row-tight" style={{ marginTop: 10 }}>
-        <button className="btn" type="button" onClick={onSelect}>
+        <button className="btn select" type="button" onClick={onSelect}>
           Select
         </button>
 
         <button
-          className="btn"
+          className="btn rename"
           type="button"
           onClick={() => {
             if (!editing) {
