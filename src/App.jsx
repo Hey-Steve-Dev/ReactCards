@@ -188,7 +188,7 @@ export default function App() {
       <main className="main">
         <div className="container">
           <Routes>
-            <Route path="/" element={<Navigate to="/admin" replace />} />
+            <Route path="/" element={<Splash />} />
 
             <Route
               path="/admin"
@@ -240,7 +240,7 @@ export default function App() {
             />
 
             <Route path="/about" element={<About />} />
-            <Route path="*" element={<Navigate to="/admin" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </main>
