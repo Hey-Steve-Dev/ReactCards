@@ -8,7 +8,7 @@ import Footer from "./components/layout/Footer";
 import About from "./pages/About";
 import Admin from "./pages/Admin";
 import Drill from "./pages/Drill";
-
+import Splash from "./pages/SplashPage";
 import { useDeckStorage } from "./hooks/useDeckStorage";
 import { useBuiltinDecks } from "./hooks/useBuiltinDecks";
 import { useSheetsDeckActions } from "./hooks/useSheetDeckActions";

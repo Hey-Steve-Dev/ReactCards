@@ -237,28 +237,28 @@ export default function About() {
               <div className="flow-pill">
                 <span className="pill">Google Sheet</span>
                 <span className="muted" style={{ fontWeight: 700 }}>
-                  (Question / Answer)
+                  Question / Answer
                 </span>
               </div>
               <div className="arrow">▼ publish / share</div>
               <div className="flow-pill">
-                <span className="pill">Import</span>
+                <span className="pill">Import Sheet</span>
                 <span className="muted" style={{ fontWeight: 700 }}>
-                  parse rows → cards
+                  Rows become cards
                 </span>
               </div>
               <div className="arrow">▼ drill</div>
               <div className="flow-pill">
-                <span className="pill">Study</span>
+                <span className="pill">Study Cards</span>
                 <span className="muted" style={{ fontWeight: 700 }}>
-                  hide known cards
+                  Hide known cards
                 </span>
               </div>
               <div className="arrow">▼ saved locally</div>
               <div className="flow-pill">
-                <span className="pill">localStorage</span>
+                <span className="pill">Local Storage</span>
                 <span className="muted" style={{ fontWeight: 700 }}>
-                  progress stays in your browser
+                  Keep your progress
                 </span>
               </div>
             </div>

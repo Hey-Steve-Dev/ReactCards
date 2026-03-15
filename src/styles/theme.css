@@ -1,5 +1,4 @@
 :root {
-  /* --- New palette: "Coastal Dusk" (mid-tone, colorful, not too dark) --- */
   --bg: #556580;
 
   --panel: rgba(255, 255, 255, 0.11);
@@ -8,14 +7,32 @@
 
   --text: #f3f6ff;
   --muted: rgba(243, 246, 255, 0.74);
+  --placeholder: rgba(243, 246, 255, 0.55);
+  --placeholder-focus: rgba(243, 246, 255, 0.7);
 
-  --primary: #6f7bff; /* periwinkle */
-  --secondary: #00d6c7; /* teal */
-  --accent: #ff9a7a; /* coral */
-  --danger: #ff5a83; /* pink-red */
+  --primary: #6f7bff;
+  --secondary: #00d6c7;
+  --accent: #ff9a7a;
+  --danger: #ff5a83;
 
   --radius: 18px;
+  --radius-lg: 22px;
+  --pill-radius: 999px;
+
   --shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  --shadow-soft: 0 10px 22px rgba(0, 0, 0, 0.18);
+  --shadow-strong: 0 12px 26px rgba(0, 0, 0, 0.25);
+
+  --shell-width: 1100px;
+  --shell-gutter: 16px;
+
+  --surface-dark: rgba(10, 16, 32, 0.55);
+  --surface-dark-2: rgba(15, 22, 40, 0.55);
+  --surface-dark-3: rgba(15, 22, 40, 0.72);
+  --surface-header: rgba(0, 0, 0, 0.18);
+  --surface-footer: rgba(0, 0, 0, 0.25);
+
+  --card-white: #ffffff;
 }
 
 * {
@@ -24,6 +41,7 @@
 
 body {
   margin: 0;
+  min-height: 100vh;
   font-family:
     system-ui,
     -apple-system,
@@ -31,46 +49,74 @@ body {
     Roboto,
     sans-serif;
   color: var(--text);
-
-  /* Updated background to match the new palette (still mid-tone) */
   background:
     radial-gradient(900px 560px at 12% 12%, #6b7aa0 0%, transparent 60%),
     radial-gradient(760px 520px at 86% 18%, #5c6e95 0%, transparent 60%),
     radial-gradient(980px 760px at 50% 105%, #46526d 0%, transparent 72%), var(--bg);
-
-  min-height: 100vh;
 }
 
-/* ---- App shell ---- */
+#root,
 .app {
-  min-height: 100%;
+  width: 100%;
+}
+
+.app {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
+/* ===== Layout ===== */
+
+.container {
+  width: min(var(--shell-width), calc(100% - (var(--shell-gutter) * 2)));
+  margin-inline: auto;
+}
+
+.main {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.screen-pad {
+  padding-bottom: 48px;
+}
+
+/* ===== Header ===== */
+
 .header {
-  padding: 14px;
-  backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.18);
-  border-bottom: 1px solid var(--border);
+  width: 100%;
   position: relative;
   top: 0;
   z-index: 10;
+  padding: 14px 0;
+  backdrop-filter: blur(10px);
+  background: var(--surface-header);
+  border-bottom: 1px solid var(--border);
 }
 
 .topbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  max-width: 1100px;
-  margin: 0 auto;
+  justify-content: space-between;
   gap: 12px;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.brand-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
 }
 
 .logo {
@@ -83,22 +129,24 @@ body {
 .nav {
   display: flex;
   gap: 8px;
+  margin-left: auto;
+  width: auto;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
 
 .tab-btn {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-weight: 700;
-  cursor: pointer;
-
-  /* Router-safe */
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--pill-radius);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .tab-btn.is-active {
@@ -107,17 +155,31 @@ body {
   color: #fff;
 }
 
-.main {
-  padding: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
+@media (max-width: 420px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .nav {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
 }
 
+/* ===== Core UI ===== */
+
 .card {
-  background: var(--panel);
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  background: var(--panel);
   box-shadow: var(--shadow);
 }
 
@@ -126,66 +188,23 @@ body {
   font-size: 14px;
 }
 
-.screen-pad {
-  padding-bottom: 24px; /* extra drill padding */
-}
-
-/* ---- Admin layout + lists ---- */
-
-.admin-layout {
-  display: grid;
-  gap: 16px;
-}
-
-@media (min-width: 980px) {
-  .admin-layout {
-    grid-template-columns: 350px 1fr;
-    align-items: start;
-  }
-}
-
-.stack {
-  display: grid;
-  gap: 14px;
-}
-
-.deck-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.deck-item {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
-  background: var(--panel-strong);
-}
-
-.deck-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.deck-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
-.deck-actions {
-  margin-top: 10px;
-}
-
 .pill {
-  font-size: 12px;
   padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--pill-radius);
+  background: rgba(255, 255, 255, 0.15);
+  text-align: center;
+  font-size: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.row > * {
+  flex: 1 1 140px;
 }
 
 .row-tight {
@@ -200,6 +219,226 @@ body {
   padding-right: 6px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* ===== Form controls ===== */
+
+.input,
+select,
+.btn {
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.input,
+select {
+  background: var(--panel-strong);
+}
+
+select {
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+select option {
+  background: #46526d;
+  color: #f3f6ff;
+}
+
+.input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+.input:focus::placeholder {
+  color: var(--placeholder-focus);
+}
+
+/* ===== Buttons ===== */
+
+.btn {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--panel-strong);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn.primary,
+.btn.next,
+.btn.rename {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.btn.success {
+  background: linear-gradient(135deg, var(--secondary), #54f0e1);
+  border-color: transparent;
+  color: #05211f;
+}
+
+.btn.accent {
+  background: linear-gradient(135deg, var(--accent), #ffc0ad);
+  border-color: transparent;
+  color: #2a0c05;
+}
+
+.btn.danger,
+.screen-pad .btn.primary,
+.screen-pad .btn.primary:visited {
+  background: linear-gradient(135deg, var(--danger), #ff9ab0) !important;
+  border-color: transparent !important;
+  color: #2a0010 !important;
+}
+
+.btn.select,
+.btn.shuffle {
+  background: linear-gradient(135deg, var(--primary), #4f63ff) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* ===== Admin ===== */
+
+.admin-layout,
+.admin-layout--grid {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+}
+
+.admin-layout > *,
+.admin-decks,
+.admin-view {
+  min-width: 0;
+  min-height: 0;
+}
+
+.admin-layout,
+.admin-layout * {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (min-width: 980px) {
+  .admin-layout {
+    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .admin-layout--grid {
+    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "decks view"
+      "tools tools";
+    align-items: stretch;
+    height: calc(100vh - 140px);
+  }
+
+  .admin-tools-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+}
+
+@media (max-width: 979px) {
+  .admin-layout--grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "decks"
+      "view"
+      "tools";
+  }
+}
+
+.admin-decks {
+  grid-area: decks;
+}
+
+.admin-view {
+  grid-area: view;
+}
+
+.admin-tools {
+  grid-area: tools;
+}
+
+.stack,
+.deck-list,
+.admin-tools-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.deck-list {
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.deck-item {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel-strong);
+}
+
+.deck-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.deck-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.deck-actions {
+  margin-top: 10px;
+}
+
+.admin-decks .card,
+.admin-view .card,
+.admin-tools-grid > .card,
+.admin-tools-grid > * > .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.admin-decks .deck-list,
+.admin-view .scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.admin-layout .card {
+  overflow: hidden;
+}
+
+/* ===== Card list content ===== */
 
 .card-row {
   padding: 12px 0;
@@ -218,71 +457,8 @@ body {
   margin-top: 6px;
 }
 
-.input {
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
-  color: var(--text);
-}
-.input::placeholder,
-textarea::placeholder,
-select::placeholder {
-  color: rgba(243, 246, 255, 0.55); /* brighter than muted */
-  opacity: 1; /* important for Firefox */
-}
+/* ===== Drill ===== */
 
-/* Optional: make it pop even more on focus */
-.input:focus::placeholder {
-  color: rgba(243, 246, 255, 0.7);
-}
-/* --- Center the entire app content --- */
-.app {
-  min-height: 100vh;
-}
-
-.main {
-  padding: 16px;
-  max-width: 1100px;
-  margin: 0 auto; /* <-- centers */
-}
-
-.header {
-  width: 100%;
-}
-
-.topbar {
-  max-width: 1100px;
-  margin: 0 auto; /* <-- centers */
-  padding: 0 0; /* keep clean */
-}
-
-/* ===== HARD CENTERING (guaranteed) ===== */
-.container {
-  width: min(1100px, calc(100% - 32px));
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-.main {
-  padding: 16px 0; /* container controls side padding */
-}
-
-/* Optional: make sure nothing forces left alignment */
-.topbar {
-  width: 100%;
-}
-
-body #root,
-body .app {
-  width: 100%;
-}
-
-/* ===== DRILL STYLING ===== */
-
-.screen-pad {
-  padding-bottom: 48px;
-}
-
-/* Drill top controls */
 .progress {
   display: flex;
   justify-content: space-between;
@@ -291,115 +467,45 @@ body .app {
   color: var(--muted);
 }
 
-/* Flashcard */
 .flashcard {
-  margin-top: 20px;
-  padding: 36px 28px;
-  border-radius: 22px;
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  min-height: 280px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  /* remove forced centering */
-  align-items: stretch; /* or just delete align-items */
-  text-align: left; /* let content control its own alignment */
+  align-items: stretch;
+  min-height: 280px;
+  margin-top: 20px;
+  padding: 36px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel-strong);
+  box-shadow: var(--shadow);
+  text-align: left;
 }
 
-/* Question / Answer labels */
 .label {
   font-size: 12px;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-weight: 800;
+  opacity: 0.8;
   color: var(--muted);
 }
 
-/* Main text */
 .side {
   font-size: 22px;
-  font-weight: 600; /* was 800 */
+  font-weight: 600;
   line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-/* Muted answer before flip */
 .side.muted {
   opacity: 0.6;
   font-weight: 600;
 }
 
-/* Button row spacing */
-.row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.row > * {
-  flex: 1 1 140px;
-}
-
-/* Improve button feel */
-.btn {
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.12s ease,
-    opacity 0.12s ease;
-
-  /* safe defaults so buttons/selects look consistent */
-  border: 1px solid var(--border);
-  background: var(--panel-strong);
-  color: var(--text);
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.95;
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* If you already have variants elsewhere, these won’t break layout */
-.btn.primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  border-color: transparent;
-  color: #fff;
-}
-.btn.success {
-  background: linear-gradient(135deg, var(--secondary), #54f0e1);
-  border-color: transparent;
-  color: #05211f;
-}
-.btn.accent {
-  background: linear-gradient(135deg, var(--accent), #ffc0ad);
-  border-color: transparent;
-  color: #2a0c05;
-}
-.btn.danger {
-  background: linear-gradient(135deg, var(--danger), #ff9ab0);
-  border-color: transparent;
-  color: #2a0010;
-}
-
-/* Make selects match inputs/buttons without changing layout */
-select {
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 14px;
-  padding: 10px 12px;
-}
-
-/* ===== 3D FLIP CARD (deeper + slower) ===== */
+/* ===== Flip card ===== */
 
 .flip-wrap {
   display: flex;
@@ -408,346 +514,131 @@ select {
 
 .flip-card {
   width: 100%;
-  max-width: 780px;
-  min-height: 300px;
-
-  /* more depth */
+  max-width: 400px;
   perspective: 1800px;
   perspective-origin: 50% 40%;
 }
 
 .flip-inner {
   position: relative;
+  display: grid;
   width: 100%;
-  min-height: 300px;
-
   transform-style: preserve-3d;
-
-  /* slower + smoother */
   transition: transform 820ms cubic-bezier(0.18, 0.88, 0.2, 1);
-
-  /* subtle “physical” feel */
   will-change: transform;
 }
 
-.flip-card.is-flipped .flip-inner {
-  /* slight tilt adds depth (optional but helps) */
-  transform: rotateY(180deg) rotateX(2deg);
-}
-
-/* add a tiny front tilt too, for consistent depth */
 .flip-card:not(.is-flipped) .flip-inner {
   transform: rotateY(0deg) rotateX(2deg);
 }
 
+.flip-card.is-flipped .flip-inner {
+  transform: rotateY(180deg) rotateX(2deg);
+}
+
 .flip-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-
-  padding: 36px 28px;
-
+  grid-area: 1 / 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  justify-content: flex-start;
+  align-items: stretch;
   gap: 14px;
-
-  /* subtle lighting/shading */
+  min-height: 300px;
+  padding: 36px 28px;
+  border-width: 3px !important;
+  border-style: solid !important;
+  border-radius: var(--radius-lg);
+  background: var(--card-white) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+  text-align: left;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   background-image:
     radial-gradient(800px 280px at 30% 10%, rgba(255, 255, 255, 0.1), transparent 55%),
     radial-gradient(700px 260px at 80% 90%, rgba(0, 0, 0, 0.18), transparent 60%);
+  overflow: visible;
 }
 
-/* back face */
-.flip-back {
-  transform: rotateY(180deg);
-}
-
-/* extra “edge” depth: faint border highlight */
 .flip-face::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
   pointer-events: none;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* mobile sizing */
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+.flip-card:not(.is-flipped) .flip-face {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+.flip-card.is-flipped .flip-face,
+.flip-back {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+.flip-card:not(.is-flipped) .label {
+  color: var(--primary);
+}
+
+.flip-card.is-flipped .label,
+.flip-back .label {
+  color: var(--danger);
+}
+
+.flip-face p,
+.flip-face strong,
+.flip-face em {
+  color: inherit;
+}
+
 @media (max-width: 520px) {
-  .flip-card,
-  .flip-inner {
-    min-height: 260px;
-  }
   .flip-face {
+    min-height: 260px;
     padding: 26px 18px;
   }
 }
 
-/* ===== ADMIN GRID OVERLAP FIX ===== */
+/* ===== About ===== */
 
-/* Let grid items actually shrink inside their columns */
-.admin-layout > * {
-  min-width: 0;
+.about-hero,
+.about-flow,
+.about-card {
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
 }
 
-/* Make the columns “shrink-safe” */
-@media (min-width: 980px) {
-  .admin-layout {
-    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
-  }
-}
-
-/* Prevent long strings from blasting through the column */
-.admin-layout,
-.admin-layout * {
-  overflow-wrap: anywhere;
-  word-break: break-word; /* helps with long URLs */
-}
-
-/* If the right panel contains tables/code that force width */
-.admin-layout .card {
-  overflow: hidden; /* keeps visual containment */
-}
-.admin-layout .scroll {
-  overflow: auto;
-}
-
-/* --- Header responsive fix: allow buttons to wrap instead of truncating --- */
-.topbar {
-  flex-wrap: wrap; /* allow second row */
-  align-items: center;
-}
-
-.nav {
-  flex-wrap: wrap; /* wrap buttons */
-  justify-content: flex-end;
-  width: 100%; /* nav can take full row when it wraps */
-  gap: 8px;
-}
-
-/* tighten buttons a bit on smaller screens */
-@media (max-width: 520px) {
-  .tab-btn {
-    padding: 8px 10px;
-    font-size: 13px;
-    white-space: nowrap; /* keep labels intact */
-  }
-}
-
-/* ===== Drill card: disable forced centering ===== */
-
-/* Stop centering content inside the drill card */
-.flip-face {
-  align-items: stretch; /* was center */
-  text-align: left; /* was center */
-}
-
-/* Optional: if you don't want vertical centering either */
-.flip-face {
-  justify-content: flex-start; /* was center */
-}
-/* Limit drill card width */
-.flip-card {
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Fix dropdown readability */
-select option {
-  background: #46526d;
-  color: #f3f6ff;
-}
-/* ===== Admin: 2 columns on top, tools row at bottom ===== */
-
-.admin-layout--grid {
-  display: grid;
-  gap: 16px;
-  min-height: 0; /* critical for scroll children */
-}
-
-/* Desktop layout: top row 2 columns, bottom row spans both */
-@media (min-width: 980px) {
-  .admin-layout--grid {
-    grid-template-columns: 350px minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "decks view"
-      "tools tools";
-    align-items: stretch;
-  }
-
-  .admin-decks {
-    grid-area: decks;
-    min-height: 0; /* critical */
-  }
-
-  .admin-view {
-    grid-area: view;
-    min-height: 0; /* critical */
-  }
-
-  .admin-tools {
-    grid-area: tools;
-  }
-}
-
-/* Mobile: stack sections */
-@media (max-width: 979px) {
-  .admin-layout--grid {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "decks"
-      "view"
-      "tools";
-  }
-}
-
-/* Make the DeckList card itself a scroll container */
-.admin-decks .card {
-  display: flex;
-  flex-direction: column;
-  min-height: 0; /* critical */
-}
-
-/* Scroll ONLY the deck list */
-.admin-decks .deck-list {
-  overflow: auto;
-  min-height: 0;
-  flex: 1;
-  padding-right: 6px;
-}
-
-/* Bottom tools layout: 3 cards in a row on desktop */
-.admin-tools-grid {
-  display: grid;
-  gap: 16px;
-}
-
-@media (min-width: 980px) {
-  .admin-tools-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
-  }
-}
-
-/* ===== Make top admin row equal height ===== */
-
-/* ===== Admin: equal-height top row + scrollbars on BOTH panels ===== */
-
-@media (min-width: 980px) {
-  .admin-layout--grid {
-    grid-template-columns: minmax(0, 350px) minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "decks view"
-      "tools tools";
-
-    /* This creates the “same height” row so both sides can scroll */
-    height: calc(100vh - 140px); /* tweak number if needed */
-  }
-
-  .admin-decks,
-  .admin-view {
-    min-height: 0; /* REQUIRED for overflow in grid children */
-  }
-}
-
-/* LEFT: Decks card fills its grid cell */
-.admin-decks .card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-/* LEFT: only the list scrolls (header stays visible) */
-.admin-decks .deck-list {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 6px;
-}
-
-/* RIGHT: AdminDeckView card fills its grid cell */
-.admin-view .card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-/* RIGHT: make its scroll area scroll */
-.admin-view .scroll {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-}
 .about-hero {
   position: relative;
   overflow: hidden;
-  border-radius: 22px;
   padding: 18px;
-  border: 1px solid var(--border);
-
-  /* more solid base so it doesn't wash out */
+  border-radius: var(--radius-lg);
   background: rgba(8, 14, 28, 0.3);
   box-shadow: var(--shadow);
 }
 
-.about-card {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 18px;
-  padding: 14px;
-
-  /* more solid card */
-  background: rgba(15, 22, 40, 0.55);
-
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
-  opacity: 0;
-  transform: translateY(10px);
-  animation: aboutIn 520ms ease forwards;
-}
-/* ===== ABOUT PAGE: fix washed-out transparency + add color (no JSX changes) ===== */
-
-/* Make the outer About card more solid so inner layers don't wash out */
-.card:has(h2:contains("About ReactCards")) {
-  background: rgba(10, 16, 32, 0.55) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-}
-
-/* Fallback for browsers that don't support :has() / :contains():
-   This will still improve things globally for About’s inner blocks. */
-.about-hero,
-.about-flow,
-.about-card {
-  background: rgba(10, 16, 32, 0.55) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-}
-
-/* Make the hero glow more colorful + less "milky" */
 .about-hero::before {
   opacity: 1 !important;
   filter: blur(14px) saturate(1.35) !important;
 }
 
-/* Pipeline container: add stronger color depth */
+.about-flow,
+.about-card {
+  background: var(--surface-dark) !important;
+}
+
 .about-flow {
   position: relative;
   overflow: hidden;
 }
 
-/* Color wash behind pipeline */
 .about-flow::before {
   content: "";
   position: absolute;
@@ -761,43 +652,29 @@ select option {
   pointer-events: none;
 }
 
-/* Gradient rail behind the flow items */
-.about-flow::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 75px;
-  bottom: 18px;
-  width: 8px;
-  height: 320px;
-  border-radius: 999px;
-
-  background: linear-gradient(
-    180deg,
-    var(--primary),
-    var(--secondary),
-    var(--accent),
-    var(--danger)
-  );
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Ensure flow content sits above backgrounds */
 .about-flow > * {
   position: relative;
   z-index: 1;
 }
 
-/* Make flow items more “solid” and readable */
+.about-card {
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface-dark-3) !important;
+  box-shadow: var(--shadow-strong) !important;
+}
+
 .flow-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--pill-radius);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   background: rgba(15, 22, 40, 0.7) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
+  font-weight: 800;
 }
-.flow-row {
-  margin-left: 8px;
-}
-/* Add automatic color accents to each flow-pill, no JSX classes needed */
+
 .flow-pill:nth-of-type(1) {
   box-shadow:
     0 0 0 1px rgba(111, 123, 255, 0.25),
@@ -808,6 +685,7 @@ select option {
     rgba(15, 22, 40, 0.75)
   ) !important;
 }
+
 .flow-pill:nth-of-type(2) {
   box-shadow:
     0 0 0 1px rgba(0, 214, 199, 0.22),
@@ -818,6 +696,7 @@ select option {
     rgba(15, 22, 40, 0.75)
   ) !important;
 }
+
 .flow-pill:nth-of-type(3) {
   box-shadow:
     0 0 0 1px rgba(255, 154, 122, 0.22),
@@ -828,6 +707,7 @@ select option {
     rgba(15, 22, 40, 0.75)
   ) !important;
 }
+
 .flow-pill:nth-of-type(4) {
   box-shadow:
     0 0 0 1px rgba(255, 90, 131, 0.22),
@@ -839,156 +719,13 @@ select option {
   ) !important;
 }
 
-/* Make the mini cards less transparent */
-.about-card {
-  background: rgba(15, 22, 40, 0.72) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25) !important;
-}
-/* ===== Bottom 3 admin tools: equal height columns ===== */
-@media (min-width: 980px) {
-  .admin-tools-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch !important; /* override align-items: start */
-    grid-auto-rows: 1fr; /* force equal row height */
-  }
-
-  /* Each grid item fills the row height */
-  .admin-tools-grid > * {
-    height: 100%;
-    min-height: 0;
-  }
-
-  /* If the component root is the card */
-  .admin-tools-grid > .card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* If the card is inside the component root */
-  .admin-tools-grid > * > .card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.brand-logo {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-}
-/* ===== Drill: Question / Answer Card Styling ===== */
-
-/* Make drill cards white instead of glass */
-.flip-face {
-  background: #ffffff !important;
-  border-width: 3px !important;
-  border-style: solid !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* QUESTION (front side) */
-.flip-card:not(.is-flipped) .flip-face {
-  border-color: var(--primary) !important;
-  color: var(--primary) !important;
-}
-
-/* ANSWER (back side) */
-.flip-card.is-flipped .flip-face,
-.flip-back {
-  border-color: var(--danger) !important;
-  color: var(--danger) !important;
-}
-
-/* Question/Answer labels */
-.label {
-  font-weight: 900;
-  letter-spacing: 1px;
-  opacity: 0.8;
-}
-
-/* Blue label when question */
-.flip-card:not(.is-flipped) .label {
-  color: var(--primary);
-}
-
-/* Red label when answer */
-.flip-card.is-flipped .label,
-.flip-back .label {
-  color: var(--danger);
-}
-
-/* Make markdown text inherit color cleanly */
-.flip-face p,
-.flip-face strong,
-.flip-face em {
-  color: inherit;
-}
-/* Blue when question visible */
-.flip-card:not(.is-flipped) ~ .row .next-btn {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #fff;
-}
-.screen-pad .btn.primary,
-.screen-pad .btn.primary:visited {
-  background: linear-gradient(135deg, var(--danger), #ff9ab0) !important;
-  border-color: transparent !important;
-  color: #2a0010 !important;
-}
-
-.screen-pad .btn.primary:hover {
-  opacity: 0.95;
-}
-.btn.next {
-  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-}
-
-.btn.next:hover {
-  opacity: 0.95;
-}
-
-.btn.select {
-  background: linear-gradient(135deg, var(--primary), #4f63ff) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-}
-
-.btn.select:hover {
-  opacity: 0.95;
-}
-
-.btn.rename {
-  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-}
-
-.btn.rename:hover {
-  opacity: 0.95;
-}
-
-/* ===== Shuffle Button (Blue theme) ===== */
-
-.btn.shuffle {
-  background: linear-gradient(135deg, var(--primary), #4f63ff) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-}
-
-.btn.shuffle:hover {
-  opacity: 0.95;
-}
 /* ===== Footer ===== */
 
 .footer {
   margin-top: 40px;
   padding: 20px 0;
   border-top: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--surface-footer);
   backdrop-filter: blur(8px);
 }
 
